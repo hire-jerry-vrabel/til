@@ -12,7 +12,7 @@ export function Header() {
         <nav className="header-nav">
           <Link to="/">Posts</Link>
           <a
-            href="/til/feed.xml"
+            href="https://hire-jerry-vrabel.github.io/til/feed.xml"
             target="_blank"
             rel="noopener noreferrer"
             title="RSS Feed"
