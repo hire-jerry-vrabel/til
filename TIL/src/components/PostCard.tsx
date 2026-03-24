@@ -1,16 +1,26 @@
-import { Link } from 'react-router-dom'
-import { formatDistanceToNow } from 'date-fns'
-import { ReadingTime } from './ReadingTime'
-import type { Post } from '../utils/parsePosts'
+import { Link } from "react-router-dom"
+import { formatDistanceToNow } from "date-fns"
+import { ReadingTime } from "./ReadingTime"
+import type { Post } from "../utils/parsePosts"
 
 interface Props {
   post: Post
 }
 
 export function PostCard({ post }: Props) {
-  const timeAgo = post.date
-    ? formatDistanceToNow(new Date(post.date + "T00:00:00"), { addSuffix: true })
-    : ''
+  const getDisplayDate = (dateStr: string): string => {
+    if (!dateStr) return ""
+    const postDate = new Date(dateStr + "T00:00:00")
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    if (postDate.getTime() === today.getTime()) return "today"
+    if (postDate.getTime() === yesterday.getTime()) return "yesterday"
+    return formatDistanceToNow(postDate, { addSuffix: true })
+  }
+
+  const timeAgo = getDisplayDate(post.date)
 
   return (
     <article className="post-card">
