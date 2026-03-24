@@ -29,7 +29,7 @@ export function Post() {
 
   const html = marked(post.content) as string
   const formattedDate = post.date
-    ? format(new Date(post.date), 'MMMM d, yyyy')
+    ? format(new Date(post.date + "T00:00:00"), 'MMMM d, yyyy')
     : ''
 
   return (

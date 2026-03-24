@@ -9,7 +9,7 @@ interface Props {
 
 export function PostCard({ post }: Props) {
   const timeAgo = post.date
-    ? formatDistanceToNow(new Date(post.date), { addSuffix: true })
+    ? formatDistanceToNow(new Date(post.date + "T00:00:00"), { addSuffix: true })
     : ''
 
   return (
