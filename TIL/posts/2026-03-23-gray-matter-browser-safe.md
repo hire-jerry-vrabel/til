@@ -19,7 +19,7 @@ Uncaught ReferenceError: Buffer is not defined
 ## Why It Happens
 
 `gray-matter` internally uses Node.js `Buffer` to handle file content.
-`Buffer` is a Node.js built-in — it does not exist in the browser.
+`Buffer` is a Node.js built-in and it does not exist in the browser.
 Even though Vite bundles everything, it cannot polyfill `Buffer`
 automatically for every package that assumes a Node environment.
 
