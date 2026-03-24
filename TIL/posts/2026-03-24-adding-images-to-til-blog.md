@@ -4,6 +4,7 @@ date: 2026-03-24
 tags: [vite, pwa, markdown, react]
 category: general
 published: true
+image: /til/images/hire-jerry-vrabel.gif
 ---
 
 ![hire-jerry-vrabel](/til/images/hire-jerry-vrabel.gif)

@@ -25,16 +25,23 @@ export function PostCard({ post }: Props) {
   return (
     <article className="post-card">
       <Link to={`/post/${post.slug}`} className="post-card-link">
-        <div className="post-card-meta">
-          <span className="post-card-date">{timeAgo}</span>
-          <ReadingTime minutes={post.readingTime} />
-        </div>
-        <h2 className="post-card-title">{post.title}</h2>
-        <p className="post-card-excerpt">{post.excerpt}</p>
-        <div className="post-card-tags">
-          {post.tags.map(tag => (
-            <span key={tag} className="tag">{tag}</span>
-          ))}
+        {post.image && (
+          <div className="post-card-image">
+            <img src={post.image} alt={post.title} />
+          </div>
+        )}
+        <div className="post-card-body">
+          <div className="post-card-meta">
+            <span className="post-card-date">{timeAgo}</span>
+            <ReadingTime minutes={post.readingTime} />
+          </div>
+          <h2 className="post-card-title">{post.title}</h2>
+          <p className="post-card-excerpt">{post.excerpt}</p>
+          <div className="post-card-tags">
+            {post.tags.map(tag => (
+              <span key={tag} className="tag">{tag}</span>
+            ))}
+          </div>
         </div>
       </Link>
     </article>

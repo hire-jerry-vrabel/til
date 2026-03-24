@@ -10,6 +10,7 @@ export interface Post {
   content: string
   readingTime: number
   published: boolean
+  image: string | null
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
@@ -60,7 +61,7 @@ export function getPosts(): Post[] {
       .replace(".md", "")
 
     const excerpt = (data.excerpt as string)
-      || content.trim().slice(0, 160).replace(/[#*`]/g, "") + "..."
+      || content.trim().replace(/!\[.*?\]\(.*?\)/g, "").replace(/[#*`]/g, "").trim().slice(0, 160) + "..."
 
     posts.push({
       slug,
@@ -72,6 +73,7 @@ export function getPosts(): Post[] {
       content,
       readingTime: readingTime(content),
       published: data.published !== false,
+      image: (data.image as string) || null,
     })
   }
 
