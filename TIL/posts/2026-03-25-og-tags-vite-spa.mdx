@@ -31,3 +31,118 @@ for our use case.
 The first step is setting sensible defaults in `index.html` that
 apply to every page:
 ```html
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="TIL — Jerry Vrabel" />
+<meta property="og:title" content="TIL — Today I Learned" />
+<meta property="og:description" content="A daily log of things I learn as a Senior Web Application Developer." />
+<meta property="og:url" content="https://hire-jerry-vrabel.github.io/til/" />
+<meta property="og:image" content="https://hire-jerry-vrabel.github.io/til/images/og-default.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+```
+
+These are the fallback values. Individual posts override them.
+
+## Per-Post Tags with a Custom Hook
+
+I wrote a `useOGTags` hook that updates the document head when
+a post loads and resets it when the component unmounts:
+```typescript
+function setMeta(property: string, content: string, useProperty = true) {
+  const attr = useProperty ? "property" : "name"
+  let el = document.querySelector(
+    `meta[${attr}="${property}"]`
+  ) as HTMLMetaElement
+
+  if (!el) {
+    el = document.createElement("meta")
+    el.setAttribute(attr, property)
+    document.head.appendChild(el)
+  }
+
+  el.setAttribute("content", content)
+}
+
+export function useOGTags({ title, description, image, url }: OGTagOptions) {
+  const fullTitle = title ? `${title} — TIL` : "TIL — Today I Learned"
+  const ogImage = image || DEFAULT_IMAGE
+
+  document.title = fullTitle
+  setMeta("og:title", fullTitle)
+  setMeta("og:description", description || DEFAULT_DESC)
+  setMeta("og:url", `${SITE_URL}${url}`)
+  setMeta("og:image", ogImage)
+  setMeta("og:type", "article")
+}
+```
+
+The key insight is `setMeta` — it finds an existing meta tag and
+updates it rather than creating a duplicate. Without that check
+you'd end up with multiple conflicting tags in the head.
+
+Used in the Post component inside a `useEffect`:
+```typescript
+useEffect(() => {
+  if (post) {
+    useOGTags({
+      title: post.title,
+      description: post.excerpt,
+      image: post.image,
+      url: `/post/${post.slug}`,
+    })
+  }
+  return () => resetOGTags()
+}, [post])
+```
+
+The cleanup function in the return resets tags back to site
+defaults when navigating away from a post.
+
+## The OG Image
+
+The recommended OG image size is **1200x630px**. I generated a
+branded default image using Python's Pillow library — dark
+background, accent colors matching the blog's design system,
+name and tech stack listed:
+```python
+from PIL import Image, ImageDraw, ImageFont
+
+w, h = 1200, 630
+img = Image.new('RGB', (w, h), color='#0f172a')
+draw = ImageDraw.Draw(img)
+
+# Blue accent bars top and bottom
+draw.rectangle([0, 0, w, 8], fill='#3b82f6')
+draw.rectangle([0, h-8, w, h], fill='#3b82f6')
+
+# ... text, tags, etc.
+img.save('public/images/og-default.png')
+```
+
+For posts with a teaser image the hook uses that image as the
+OG image automatically. Posts without one fall back to the
+branded default.
+
+## Testing It
+
+Two useful tools for checking OG tags before sharing:
+
+- **opengraph.xyz** — paste any URL and see the rendered card
+- **metatags.io** — previews across LinkedIn, Facebook, Slack
+
+<Callout type="tip">
+  LinkedIn caches OG tags aggressively. If you update them and
+  the old preview still shows, use LinkedIn Post Inspector at
+  linkedin.com/post-inspector to force a refresh.
+</Callout>
+
+## The Takeaway
+
+OG tags in a SPA are straightforward once you understand the
+pattern — set defaults in `index.html`, override per-route with
+a hook, clean up on unmount. The LinkedIn scraper handles the
+JS execution so per-post previews work correctly.
+
+The branded OG image is worth the 30 minutes it takes to build.
+A link card with your name, tech stack, and a clean design
+stands out in a feed full of plain URLs.
