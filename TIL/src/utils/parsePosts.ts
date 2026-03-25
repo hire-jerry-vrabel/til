@@ -11,6 +11,7 @@ export interface Post {
   readingTime: number
   published: boolean
   image: string | null
+  video: string | null
 }
 
 function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
@@ -74,6 +75,7 @@ export function getPosts(): Post[] {
       readingTime: readingTime(content),
       published: data.published !== false,
       image: (data.image as string) || null,
+      video: (data.video as string) || null,
     })
   }
 

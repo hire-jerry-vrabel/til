@@ -27,6 +27,54 @@ export function Post() {
     )
   }
 
+  // Custom renderer for video embeds
+  const renderer = new Renderer()
+
+  const originalParagraph = renderer.paragraph.bind(renderer)
+  renderer.paragraph = (token) => {
+    const text = token.text
+
+    // YouTube: @[youtube](videoId)
+    const youtube = text.match(/^@\[youtube\]\(([^)]+)\)$/)
+    if (youtube) {
+      return `<div class="video-embed video-youtube">
+        <iframe
+          src="https://www.youtube.com/embed/${youtube[1]}"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>`
+    }
+
+    // Vimeo: @[vimeo](videoId)
+    const vimeo = text.match(/^@\[vimeo\]\(([^)]+)\)$/)
+    if (vimeo) {
+      return `<div class="video-embed video-vimeo">
+        <iframe
+          src="https://player.vimeo.com/video/${vimeo[1]}"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>`
+    }
+
+    // Local or hosted video: @[video](url)
+    const video = text.match(/^@\[video\]\(([^)]+)\)$/)
+    if (video) {
+      return `<div class="video-local">
+        <video controls preload="metadata">
+          <source src="${video[1]}" />
+          Your browser does not support the video tag.
+        </video>
+      </div>`
+    }
+
+    return originalParagraph(token)
+  }
+
+  marked.use({ renderer })
   const html = marked(post.content) as string
   const formattedDate = post.date
     ? format(new Date(post.date + "T00:00:00"), 'MMMM d, yyyy')
