@@ -1,0 +1,33 @@
+---
+title: Adding Open Graph Tags to a Vite React SPA
+date: 2026-03-25
+tags: [vite, react, typescript, pwa, seo]
+category: general
+published: true
+---
+
+## The Problem
+
+This TIL blog is a Vite + React SPA deployed to GitHub Pages. When
+I shared a link on LinkedIn it showed a plain URL with no preview
+card — no title, no description, no image. Not a great look for a
+developer portfolio.
+
+The fix is Open Graph tags — a set of `<meta>` elements that tell
+social platforms how to render your link as a rich preview card.
+
+## The Challenge with SPAs
+
+In a server-rendered app you'd just set OG tags in the HTML response
+per route. In a SPA there's only one `index.html` — so you have to
+update the tags dynamically via JavaScript after the page loads.
+
+The tradeoff: scrapers that don't execute JavaScript won't see
+per-page tags. LinkedIn's scraper does execute JS, so it works
+for our use case.
+
+## Site-Wide Tags in index.html
+
+The first step is setting sensible defaults in `index.html` that
+apply to every page:
+```html
