@@ -1,5 +1,5 @@
 ---
-title: "Why marked's Custom Renderer Breaks with 'this.parser is undefined'"
+title: "Why the marked Custom Renderer Breaks with this.parser is undefined"
 date: 2026-03-24
 tags: [typescript, react, markdown, debugging]
 category: typescript-javascript
