@@ -768,3 +768,43 @@
     display: block;
   }
 }
+
+/* Callout blocks */
+.callout {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--border-radius);
+  margin: var(--space-6) 0;
+  border-left: 4px solid;
+}
+.callout-info {
+  background-color: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+}
+.callout-tip {
+  background-color: #f0fdf4;
+  border-color: #22c55e;
+}
+.callout-warning {
+  background-color: #fffbeb;
+  border-color: #f59e0b;
+}
+.callout-danger {
+  background-color: #fef2f2;
+  border-color: #ef4444;
+}
+[data-theme="dark"] .callout-tip { background-color: #052e16; }
+[data-theme="dark"] .callout-warning { background-color: #1c1400; }
+[data-theme="dark"] .callout-danger { background-color: #1c0000; }
+.callout-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.callout-content {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+.callout-content p { margin-bottom: 0; }

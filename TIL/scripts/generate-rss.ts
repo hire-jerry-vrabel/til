@@ -30,14 +30,14 @@ const postsDir = resolve(process.cwd(), "posts")
 const distDir = resolve(process.cwd(), "dist")
 
 const files = readdirSync(postsDir)
-  .filter(f => f.endsWith(".md"))
+  .filter(f => f.endsWith(".mdx"))
   .sort()
   .reverse()
 
 const posts: Post[] = files.map(file => {
   const raw = readFileSync(resolve(postsDir, file), "utf-8")
   const { data, content } = parseFrontmatter(raw)
-  const slug = file.replace(".md", "")
+  const slug = file.replace(".mdx", "")
   const excerpt = content.trim().slice(0, 160).replace(/[#*`]/g, "") + "..."
   return {
     slug,

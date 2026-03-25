@@ -1,27 +1,21 @@
 import { useEffect, useMemo, useCallback } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
-import { marked } from "marked"
+import { MDXProvider } from "@mdx-js/react"
 import { format } from "date-fns"
 import { ReadingTime } from "../components/ReadingTime"
 import { getPostBySlug, getPosts } from "../utils/parsePosts"
 import { useSwipe } from "../hooks/useSwipe"
 import { useKeyboardNav } from "../hooks/useKeyboardNav"
+import { YouTube } from "../components/mdx/YouTube"
+import { Vimeo } from "../components/mdx/Vimeo"
+import { Video } from "../components/mdx/Video"
+import { Callout } from "../components/mdx/Callout"
 
-// Pre-process video embed syntax before marked parses it
-function preprocessVideoEmbeds(content: string): string {
-  return content
-    .replace(
-      /^@\[youtube\]\(([^)]+)\)$/gm,
-      (_, id) => `<div class="video-embed video-youtube"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
-    )
-    .replace(
-      /^@\[vimeo\]\(([^)]+)\)$/gm,
-      (_, id) => `<div class="video-embed video-vimeo"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`
-    )
-    .replace(
-      /^@\[video\]\(([^)]+)\)$/gm,
-      (_, src) => `<div class="video-local"><video controls preload="metadata"><source src="${src}" />Your browser does not support the video tag.</video></div>`
-    )
+const mdxComponents = {
+  YouTube,
+  Vimeo,
+  Video,
+  Callout,
 }
 
 export function Post() {
@@ -51,8 +45,6 @@ export function Post() {
     if (prevPost) navigate(`/post/${prevPost.slug}`)
   }, [prevPost, navigate])
 
-  // Swipe left = go to newer post (next)
-  // Swipe right = go to older post (prev)
   const swipeHandlers = useSwipe({
     onSwipeLeft: goNext,
     onSwipeRight: goPrev,
@@ -81,10 +73,11 @@ export function Post() {
     )
   }
 
-  const html = marked(preprocessVideoEmbeds(post.content)) as string
   const formattedDate = post.date
     ? format(new Date(post.date + "T00:00:00"), "MMMM d, yyyy")
     : ""
+
+  const { Component } = post
 
   return (
     <main className="post" {...swipeHandlers}>
@@ -106,10 +99,11 @@ export function Post() {
           </div>
         </header>
 
-        <div
-          className="post-content"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <div className="post-content">
+          <MDXProvider components={mdxComponents}>
+            <Component />
+          </MDXProvider>
+        </div>
 
         <nav className="post-nav" aria-label="Post navigation">
           <div className="post-nav-prev">

@@ -1,2 +1,8 @@
 /// <reference types="vite/client" />
-/// <reference types="vite-plugin-pwa/react" />
+
+declare module "*.mdx" {
+  import type { ComponentType } from "react"
+  const MDXComponent: ComponentType
+  export default MDXComponent
+  export const frontmatter: Record<string, unknown>
+}

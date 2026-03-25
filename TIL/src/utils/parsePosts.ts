@@ -1,3 +1,4 @@
+import type { ComponentType } from "react"
 import { readingTime } from "./readingTime"
 
 export interface Post {
@@ -7,75 +8,49 @@ export interface Post {
   tags: string[]
   category: string
   excerpt: string
-  content: string
   readingTime: number
   published: boolean
   image: string | null
   video: string | null
+  Component: ComponentType
 }
 
-function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
-  if (!match) return { data: {}, content: raw }
-
-  const yamlStr = match[1]
-  const content = match[2].trim()
-  const data: Record<string, unknown> = {}
-
-  for (const line of yamlStr.split("\n")) {
-    const colonIdx = line.indexOf(":")
-    if (colonIdx === -1) continue
-    const key = line.slice(0, colonIdx).trim()
-    const val = line.slice(colonIdx + 1).trim()
-
-    if (val.startsWith("[") && val.endsWith("]")) {
-      data[key] = val
-        .slice(1, -1)
-        .split(",")
-        .map(s => s.trim().replace(/^["\'"]|["\'"]$/g, ""))
-        .filter(Boolean)
-    } else if (val === "true") {
-      data[key] = true
-    } else if (val === "false") {
-      data[key] = false
-    } else {
-      data[key] = val.replace(/^["\'"]|["\'"]$/g, "")
-    }
-  }
-
-  return { data, content }
+interface MDXModule {
+  default: ComponentType
+  frontmatter: Record<string, unknown>
 }
 
-const modules = import.meta.glob("../../posts/*.md", { query: "?raw", import: "default", eager: true })
+const modules = import.meta.glob<MDXModule>("../../posts/*.mdx", { eager: true })
 
 export function getPosts(): Post[] {
   const posts: Post[] = []
 
   for (const path in modules) {
-    const raw = modules[path] as string
-    const { data, content } = parseFrontmatter(raw)
+    const mod = modules[path]
+    const data = mod.frontmatter || {}
 
     if (data.published === false) continue
 
     const slug = path
       .replace(/.*\//, "")
-      .replace(".md", "")
+      .replace(".mdx", "")
 
-    const excerpt = (data.excerpt as string)
-      || content.trim().replace(/!\[.*?\]\(.*?\)/g, "").replace(/[#*`]/g, "").trim().slice(0, 160) + "..."
+    const title = (data.title as string) || slug
+
+    const excerpt = (data.excerpt as string) || title + "..."
 
     posts.push({
       slug,
-      title: (data.title as string) || slug,
+      title,
       date: data.date ? String(data.date) : "",
       tags: (data.tags as string[]) || [],
       category: (data.category as string) || "general",
       excerpt,
-      content,
-      readingTime: readingTime(content),
+      readingTime: readingTime(title),
       published: data.published !== false,
       image: (data.image as string) || null,
       video: (data.video as string) || null,
+      Component: mod.default,
     })
   }
 
