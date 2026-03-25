@@ -663,3 +663,108 @@
   opacity: 0.6;
   transform: scale(1.03);
 }
+
+/* Post navigation */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+
+.post-nav-prev {
+  justify-self: start;
+}
+
+.post-nav-next {
+  justify-self: end;
+  text-align: right;
+}
+
+.post-nav-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  text-decoration: none;
+  max-width: 280px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  transition: border-color var(--transition), box-shadow var(--transition),
+              transform var(--transition);
+}
+
+.post-nav-link:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.post-nav-link--right {
+  align-items: flex-end;
+}
+
+.post-nav-direction {
+  font-size: var(--font-size-xs);
+  color: var(--color-accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.post-nav-title {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.post-nav-empty {
+  display: block;
+}
+
+/* Swipe hint — mobile only */
+.post-swipe-hint {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-4);
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .post-swipe-hint {
+    display: block;
+  }
+
+  .post-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .post-nav-next {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .post-nav-link--right {
+    align-items: flex-start;
+  }
+}
+
+/* Video modal swipe hint */
+.video-modal-hint {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: var(--space-2);
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .video-modal-hint {
+    display: block;
+  }
+}

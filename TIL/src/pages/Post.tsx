@@ -1,21 +1,74 @@
-import { useEffect, useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { marked, Renderer } from "marked"
-import type { Tokens } from "marked"
-import { format } from 'date-fns'
-import { ReadingTime } from '../components/ReadingTime'
-import { getPostBySlug } from '../utils/parsePosts'
+import { useEffect, useMemo, useCallback } from "react"
+import { Link, useParams, useNavigate } from "react-router-dom"
+import { marked } from "marked"
+import { format } from "date-fns"
+import { ReadingTime } from "../components/ReadingTime"
+import { getPostBySlug, getPosts } from "../utils/parsePosts"
+import { useSwipe } from "../hooks/useSwipe"
+import { useKeyboardNav } from "../hooks/useKeyboardNav"
+
+// Pre-process video embed syntax before marked parses it
+function preprocessVideoEmbeds(content: string): string {
+  return content
+    .replace(
+      /^@\[youtube\]\(([^)]+)\)$/gm,
+      (_, id) => `<div class="video-embed video-youtube"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+    )
+    .replace(
+      /^@\[vimeo\]\(([^)]+)\)$/gm,
+      (_, id) => `<div class="video-embed video-vimeo"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>`
+    )
+    .replace(
+      /^@\[video\]\(([^)]+)\)$/gm,
+      (_, src) => `<div class="video-local"><video controls preload="metadata"><source src="${src}" />Your browser does not support the video tag.</video></div>`
+    )
+}
 
 export function Post() {
   const { slug } = useParams<{ slug: string }>()
-  const post = useMemo(() => getPostBySlug(slug || ''), [slug])
+  const navigate = useNavigate()
+  const allPosts = useMemo(() => getPosts(), [])
+  const post = useMemo(() => getPostBySlug(slug || ""), [slug])
+
+  const currentIndex = useMemo(
+    () => allPosts.findIndex(p => p.slug === slug),
+    [allPosts, slug]
+  )
+
+  const prevPost = currentIndex < allPosts.length - 1
+    ? allPosts[currentIndex + 1]
+    : null
+
+  const nextPost = currentIndex > 0
+    ? allPosts[currentIndex - 1]
+    : null
+
+  const goNext = useCallback(() => {
+    if (nextPost) navigate(`/post/${nextPost.slug}`)
+  }, [nextPost, navigate])
+
+  const goPrev = useCallback(() => {
+    if (prevPost) navigate(`/post/${prevPost.slug}`)
+  }, [prevPost, navigate])
+
+  // Swipe left = go to newer post (next)
+  // Swipe right = go to older post (prev)
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: goNext,
+    onSwipeRight: goPrev,
+  })
+
+  useKeyboardNav({
+    onLeft: goPrev,
+    onRight: goNext,
+  })
 
   useEffect(() => {
     if (post) {
       document.title = `${post.title} — TIL`
     }
     return () => {
-      document.title = 'TIL — Today I Learned'
+      document.title = "TIL — Today I Learned"
     }
   }, [post])
 
@@ -28,61 +81,13 @@ export function Post() {
     )
   }
 
-  // Custom renderer for video embeds
-  const renderer = new Renderer()
-
-  const originalParagraph = renderer.paragraph.bind(renderer)
-  renderer.paragraph = (token: Tokens.Paragraph) => {
-    const text = token.text
-
-    // YouTube: @[youtube](videoId)
-    const youtube = text.match(/^@\[youtube\]\(([^)]+)\)$/)
-    if (youtube) {
-      return `<div class="video-embed video-youtube">
-        <iframe
-          src="https://www.youtube.com/embed/${youtube[1]}"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>`
-    }
-
-    // Vimeo: @[vimeo](videoId)
-    const vimeo = text.match(/^@\[vimeo\]\(([^)]+)\)$/)
-    if (vimeo) {
-      return `<div class="video-embed video-vimeo">
-        <iframe
-          src="https://player.vimeo.com/video/${vimeo[1]}"
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>`
-    }
-
-    // Local or hosted video: @[video](url)
-    const video = text.match(/^@\[video\]\(([^)]+)\)$/)
-    if (video) {
-      return `<div class="video-local">
-        <video controls preload="metadata">
-          <source src="${video[1]}" />
-          Your browser does not support the video tag.
-        </video>
-      </div>`
-    }
-
-    return originalParagraph(token)
-  }
-
-  marked.use({ renderer })
-  const html = marked(post.content) as string
+  const html = marked(preprocessVideoEmbeds(post.content)) as string
   const formattedDate = post.date
-    ? format(new Date(post.date + "T00:00:00"), 'MMMM d, yyyy')
-    : ''
+    ? format(new Date(post.date + "T00:00:00"), "MMMM d, yyyy")
+    : ""
 
   return (
-    <main className="post">
+    <main className="post" {...swipeHandlers}>
       <div className="post-inner">
         <Link to="/" className="post-back">← All posts</Link>
 
@@ -94,11 +99,7 @@ export function Post() {
           <h1 className="post-title">{post.title}</h1>
           <div className="post-tags">
             {post.tags.map(tag => (
-              <Link
-                key={tag}
-                to={`/?tag=${tag}`}
-                className="tag"
-              >
+              <Link key={tag} to={`/?tag=${tag}`} className="tag">
                 {tag}
               </Link>
             ))}
@@ -110,8 +111,34 @@ export function Post() {
           dangerouslySetInnerHTML={{ __html: html }}
         />
 
+        <nav className="post-nav" aria-label="Post navigation">
+          <div className="post-nav-prev">
+            {prevPost ? (
+              <Link to={`/post/${prevPost.slug}`} className="post-nav-link">
+                <span className="post-nav-direction">← Older</span>
+                <span className="post-nav-title">{prevPost.title}</span>
+              </Link>
+            ) : (
+              <span className="post-nav-empty" />
+            )}
+          </div>
+          <div className="post-nav-next">
+            {nextPost ? (
+              <Link to={`/post/${nextPost.slug}`} className="post-nav-link post-nav-link--right">
+                <span className="post-nav-direction">Newer →</span>
+                <span className="post-nav-title">{nextPost.title}</span>
+              </Link>
+            ) : (
+              <span className="post-nav-empty" />
+            )}
+          </div>
+        </nav>
+
         <footer className="post-footer">
           <Link to="/" className="post-back">← All posts</Link>
+          <p className="post-swipe-hint" aria-hidden="true">
+            ← swipe to navigate →
+          </p>
         </footer>
       </div>
     </main>

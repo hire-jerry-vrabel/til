@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react"
+import { useSwipe } from "../hooks/useSwipe"
 
 interface Props {
   src: string
@@ -21,6 +22,10 @@ export function VideoModal({ src, type, title, onClose }: Props) {
     }
   }, [handleKeyDown])
 
+  const swipeHandlers = useSwipe({
+    onSwipeDown: onClose,
+  })
+
   const getEmbedUrl = () => {
     if (type === "youtube") {
       return `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`
@@ -38,6 +43,7 @@ export function VideoModal({ src, type, title, onClose }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label={title}
+      {...swipeHandlers}
     >
       <div
         className="video-modal-container"
@@ -50,6 +56,7 @@ export function VideoModal({ src, type, title, onClose }: Props) {
         >
           ✕
         </button>
+        <p className="video-modal-hint">Swipe down or press Esc to close</p>
         <div className="video-modal-player">
           {type === "local" ? (
             <video
