@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { marked } from 'marked'
+import { marked, Renderer } from "marked"
+import type { Tokens } from "marked"
 import { format } from 'date-fns'
 import { ReadingTime } from '../components/ReadingTime'
 import { getPostBySlug } from '../utils/parsePosts'
@@ -31,7 +32,7 @@ export function Post() {
   const renderer = new Renderer()
 
   const originalParagraph = renderer.paragraph.bind(renderer)
-  renderer.paragraph = (token) => {
+  renderer.paragraph = (token: Tokens.Paragraph) => {
     const text = token.text
 
     // YouTube: @[youtube](videoId)
