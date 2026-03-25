@@ -5,6 +5,7 @@ import { format } from "date-fns"
 import { ReadingTime } from "../components/ReadingTime"
 import { getPostBySlug, getPosts } from "../utils/parsePosts"
 import { useSwipe } from "../hooks/useSwipe"
+import { useOGTags, resetOGTags } from "../hooks/useOGTags"
 import { useKeyboardNav } from "../hooks/useKeyboardNav"
 import { YouTube } from "../components/mdx/YouTube"
 import { Vimeo } from "../components/mdx/Vimeo"
@@ -57,10 +58,16 @@ export function Post() {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} — TIL`
+      useOGTags({
+        title: post.title,
+        description: post.excerpt,
+        image: post.image,
+        url: `/post/${post.slug}`,
+        type: "article",
+      })
     }
     return () => {
-      document.title = "TIL — Today I Learned"
+      resetOGTags()
     }
   }, [post])
 
