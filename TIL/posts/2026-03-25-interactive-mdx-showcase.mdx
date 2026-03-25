@@ -1,0 +1,126 @@
+---
+title: What MDX Can Do — An Interactive Showcase
+date: 2026-03-25
+tags: [react, typescript, mdx, animation, css]
+category: general
+published: true
+---
+
+This post exists to show off what's possible when your blog posts
+are React components. Everything below is interactive — no iframes,
+no embeds, just MDX components running directly in the page.
+
+---
+
+## Particle Canvas
+
+A canvas animation that responds to your mouse. Built with
+`requestAnimationFrame`, particle physics, and connection lines
+drawn between nearby particles.
+
+<ParticleCanvas height={380} particleCount={70} />
+
+---
+
+## TypeWriter
+
+Code that writes itself. Useful for walkthroughs and tutorials
+where you want the reader to follow along at a natural pace.
+
+<TypeWriter
+  language="typescript"
+  speed={35}
+  loop={true}
+  code={`// The TypeScript satisfies operator
+const palette = {
+  red: [255, 0, 0],
+  green: "#00ff00",
+} satisfies Record<string, string | number[]>
+
+// palette.red is number[] — not string | number[]
+// satisfies validates the type without widening it
+const redChannel = palette.red[0] // ✓ works
+`}
+/>
+
+---
+
+## Animation Playground
+
+A live CSS animation editor. Tweak the sliders and watch the
+animation update in real time. The generated CSS is shown below
+the controls.
+
+<AnimationPlayground />
+
+---
+
+## TypeScript Quiz
+
+Test your TypeScript knowledge. Three questions covering some
+genuinely tricky output scenarios.
+
+<CodeQuiz
+  title="TypeScript Output Quiz"
+  questions={[
+    {
+      code: `type A = "x" extends string ? true : false
+type B = string extends "x" ? true : false
+
+const a: A = true
+const b: B = true`,
+      options: [
+        "Both compile fine",
+        "Only const a compiles",
+        "Only const b compiles",
+        "Neither compiles"
+      ],
+      answer: 1,
+      explanation: "'x' extends string is true, but string extends 'x' is false — a string could be any value, not just 'x'. So B is false and const b: B = true fails."
+    },
+    {
+      code: `const arr = [1, 2, 3]
+const [first, ...rest] = arr
+
+type T = typeof rest`,
+      options: [
+        "T is number[]",
+        "T is [number, number]",
+        "T is readonly number[]",
+        "T is never"
+      ],
+      answer: 0,
+      explanation: "Rest elements in destructuring always produce an array type. typeof rest is number[] — not a tuple, even though we know it has exactly 2 elements."
+    },
+    {
+      code: `function identity<T>(x: T): T {
+  return x
+}
+
+const result = identity(42)
+type R = typeof result`,
+      options: [
+        "R is number",
+        "R is 42",
+        "R is T",
+        "R is unknown"
+      ],
+      answer: 1,
+      explanation: "TypeScript infers the literal type 42 when you pass a literal to a generic function without a type annotation. result is typed as 42, not number."
+    }
+  ]}
+/>
+
+---
+
+## What Makes This Possible
+
+All four components above are React components defined in
+`src/components/mdx/` and registered in the MDX provider in
+`Post.tsx`. Any post can use them with no imports — just drop
+the JSX tag in the Markdown.
+
+The architecture: Vite 7 + React 19 + TypeScript +
+`@mdx-js/rollup` + `remark-frontmatter` + `remark-mdx-frontmatter`.
+
+This is what a developer blog looks like in 2026.

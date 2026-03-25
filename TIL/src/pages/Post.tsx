@@ -11,12 +11,20 @@ import { YouTube } from "../components/mdx/YouTube"
 import { Vimeo } from "../components/mdx/Vimeo"
 import { Video } from "../components/mdx/Video"
 import { Callout } from "../components/mdx/Callout"
+import { ParticleCanvas } from "../components/mdx/ParticleCanvas"
+import { TypeWriter } from "../components/mdx/TypeWriter"
+import { CodeQuiz } from "../components/mdx/CodeQuiz"
+import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
 
 const mdxComponents = {
   YouTube,
   Vimeo,
   Video,
   Callout,
+  ParticleCanvas,
+  TypeWriter,
+  CodeQuiz,
+  AnimationPlayground,
 }
 
 export function Post() {
