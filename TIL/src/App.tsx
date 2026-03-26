@@ -3,6 +3,7 @@ import { Header } from "./components/Header"
 import { Home } from "./pages/Home"
 import { Post } from "./pages/Post"
 import { ThemeProvider } from "./context/ThemeContext"
+import { ScrollToTop } from "./components/ScrollToTop"
 import "./styles/variables.css"
 import "./index.css"
 
@@ -11,6 +12,7 @@ function App() {
     <ThemeProvider>
       <BrowserRouter basename="/til">
         <div className="app">
+          <ScrollToTop />
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
