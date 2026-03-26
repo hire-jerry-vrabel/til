@@ -1072,3 +1072,21 @@
 @media (max-width: 640px) {
   .anim-controls { grid-template-columns: 1fr; }
 }
+
+/* Giscus comments */
+.post-comments {
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+}
+
+.post-comments-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-6);
+}
+
+.post-comments .giscus {
+  width: 100%;
+}

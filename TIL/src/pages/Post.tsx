@@ -15,6 +15,7 @@ import { ParticleCanvas } from "../components/mdx/ParticleCanvas"
 import { TypeWriter } from "../components/mdx/TypeWriter"
 import { CodeQuiz } from "../components/mdx/CodeQuiz"
 import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
+import { PostComments } from "../components/mdx/PostComments"
 
 const mdxComponents = {
   YouTube,
@@ -142,6 +143,8 @@ export function Post() {
             )}
           </div>
         </nav>
+
+        <PostComments slug={post.slug} />
 
         <footer className="post-footer">
           <Link to="/" className="post-back">← All posts</Link>
