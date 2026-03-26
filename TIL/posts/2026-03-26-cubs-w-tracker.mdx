@@ -1,0 +1,43 @@
+---
+title: Cubs W Tracker - Opening Day 2026
+date: 2026-03-26
+tags: [react, typescript, mdx, baseball, api]
+category: general
+published: true
+image: /til/images/og-default.png
+---
+
+It's Opening Day 2026. The Cubs are at Wrigley.
+So I built a live W tracker because that's what developers do.
+
+<CubsWTracker />
+
+## How It Works
+
+The tracker pulls live Cubs game data from the MLB Stats API —
+a free, no-auth-required API that MLB maintains publicly.
+It shows the current record, the last game score, and most
+importantly — whether to fly the W flag or the L flag.
+
+The W flag is an actual Chicago Cubs tradition. After every
+win at Wrigley Field they raise a white W flag from the
+scoreboard. After a loss it's a blue L. Every Cubs fan in
+Chicago knows exactly what it means when they see it
+from the rooftops across Waveland Avenue.
+
+## The Stack
+
+Built as a React MDX component — drop `<CubsWTracker />` in
+any post and it fetches live data and renders. CSS animations
+for the waving flag, confetti on a win, streaks, score bugs.
+
+No backend. No API key. Just the MLB Stats API and React.
+
+## Let's Go Cubs
+
+It's Opening Day — 0-0, anything is possible. The Cubs host the
+Washington Nationals at Wrigley today at 1:20 PM CDT.
+
+The tracker above updates live. Check back after the game.
+
+Fly the W. 🐻⚾

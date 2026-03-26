@@ -16,6 +16,7 @@ import { TypeWriter } from "../components/mdx/TypeWriter"
 import { CodeQuiz } from "../components/mdx/CodeQuiz"
 import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
 import { TrafficDashboard } from "../components/mdx/TrafficDashboard"
+import { CubsWTracker } from "../components/mdx/CubsWTracker"
 import { PostComments } from "../components/mdx/PostComments"
 
 const mdxComponents = {
@@ -28,6 +29,7 @@ const mdxComponents = {
   CodeQuiz,
   AnimationPlayground,
   TrafficDashboard,
+  CubsWTracker,
 }
 
 export function Post() {
