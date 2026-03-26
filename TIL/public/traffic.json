@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 37,
+    "count": 60,
     "uniques": 2,
     "views": [
-      {
-        "timestamp": "2026-03-11T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
       {
         "timestamp": "2026-03-12T00:00:00Z",
         "count": 0,
@@ -72,18 +67,18 @@
         "timestamp": "2026-03-24T00:00:00Z",
         "count": 19,
         "uniques": 2
+      },
+      {
+        "timestamp": "2026-03-25T00:00:00Z",
+        "count": 23,
+        "uniques": 1
       }
     ]
   },
   "clones": {
-    "count": 135,
-    "uniques": 68,
+    "count": 274,
+    "uniques": 110,
     "clones": [
-      {
-        "timestamp": "2026-03-11T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
       {
         "timestamp": "2026-03-12T00:00:00Z",
         "count": 0,
@@ -148,6 +143,11 @@
         "timestamp": "2026-03-24T00:00:00Z",
         "count": 91,
         "uniques": 40
+      },
+      {
+        "timestamp": "2026-03-25T00:00:00Z",
+        "count": 139,
+        "uniques": 53
       }
     ]
   },
@@ -155,25 +155,49 @@
     {
       "path": "/hire-jerry-vrabel/til",
       "title": "hire-jerry-vrabel/til: A repo of short entries of things I'm learning.",
-      "count": 18,
+      "count": 23,
       "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til/actions",
       "title": "Workflow runs · hire-jerry-vrabel/til",
-      "count": 4,
+      "count": 10,
       "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/App.tsx",
       "title": "til/TIL/src at main · hire-jerry-vrabel/til",
-      "count": 2,
+      "count": 3,
       "uniques": 1
     },
     {
       "path": "/hire-jerry-vrabel/til/tree/main/TIL",
       "title": "hire-jerry-vrabel/til: A repo of short entries of things I'm learning.",
+      "count": 3,
+      "uniques": 1
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/tree/main/TIL/src",
+      "title": "til/TIL at main · hire-jerry-vrabel/til",
       "count": 2,
+      "uniques": 1
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/tree/main/TIL/src/components",
+      "title": "til/TIL/src at main · hire-jerry-vrabel/til",
+      "count": 2,
+      "uniques": 1
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/actions/runs/23518313857",
+      "title": "feat: add YouTube, Vimeo, and local video support with teaser thumbnails · hi...",
+      "count": 1,
+      "uniques": 1
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/actions/runs/23518313857/job/68455727164",
+      "title": "feat: add YouTube, Vimeo, and local video support with teaser thumbnails · hi...",
+      "count": 1,
       "uniques": 1
     },
     {
@@ -187,38 +211,14 @@
       "title": "til/TIL/posts at main · hire-jerry-vrabel/til",
       "count": 1,
       "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/pwa-assets.config.ts",
-      "title": "til/TIL at main · hire-jerry-vrabel/til",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/scripts/generate-rss.ts",
-      "title": "til/TIL/scripts at main · hire-jerry-vrabel/til",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/components/Header.tsx",
-      "title": "til/TIL/src/components at main · hire-jerry-vrabel/til",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/components/PostCard.tsx",
-      "title": "til/TIL/src/components/Header.tsx at main · hire-jerry-vrabel/til",
-      "count": 1,
-      "uniques": 1
     }
   ],
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 37,
+      "count": 60,
       "uniques": 2
     }
   ],
-  "updated": "2026-03-26T02:44:47Z"
+  "updated": "2026-03-26T08:38:15Z"
 }
