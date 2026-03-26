@@ -15,6 +15,7 @@ import { ParticleCanvas } from "../components/mdx/ParticleCanvas"
 import { TypeWriter } from "../components/mdx/TypeWriter"
 import { CodeQuiz } from "../components/mdx/CodeQuiz"
 import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
+import { TrafficDashboard } from "../components/mdx/TrafficDashboard"
 import { PostComments } from "../components/mdx/PostComments"
 
 const mdxComponents = {
@@ -26,6 +27,7 @@ const mdxComponents = {
   TypeWriter,
   CodeQuiz,
   AnimationPlayground,
+  TrafficDashboard,
 }
 
 export function Post() {

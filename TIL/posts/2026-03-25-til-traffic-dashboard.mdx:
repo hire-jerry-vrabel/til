@@ -1,0 +1,50 @@
+---
+title: Live Traffic Dashboard — Who's Reading the TIL Blog
+date: 2026-03-25
+tags: [meta, github, analytics]
+category: general
+published: true
+---
+
+This blog is part of my job search as a Senior Web Application
+Developer. I wanted to see who's actually reading it — so I built
+a live traffic dashboard powered by the GitHub Traffic API.
+
+Data is fetched daily via a GitHub Actions workflow and written
+to a static `traffic.json` file. The charts below update every
+24 hours automatically.
+
+<TrafficDashboard />
+
+## How It Works
+
+GitHub exposes a Traffic API that returns 14 days of views,
+unique visitors, popular paths, and referrers for any repo
+you own. The catch — it requires authentication, so you
+can't call it directly from a static site.
+
+The solution is a scheduled GitHub Actions workflow that
+runs at 1am CT every day:
+
+1. Fetches views, clones, paths and referrers from the API
+2. Writes the data to `public/traffic.json`
+3. Commits it back to the repo with `[skip ci]` to avoid
+   triggering a full redeploy
+
+The blog reads `traffic.json` at runtime and renders it
+with Recharts — an area chart for views over time and a
+horizontal bar chart for top posts.
+
+## The TrafficDashboard Component
+
+The component is a standard React component registered in
+the MDX provider — drop `<TrafficDashboard />` in any post
+and it renders the live data inline.
+
+It handles three states cleanly:
+- **Loading** — fetching the JSON file
+- **Error** — data not available yet or fetch failed
+- **Success** — renders the charts
+
+No backend. No database. No third-party analytics service.
+Just a JSON file, a scheduled workflow, and Recharts.

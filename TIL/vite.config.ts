@@ -8,6 +8,18 @@ import { resolve } from "path"
 
 export default defineConfig({
   base: "/til/",
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          recharts: ["recharts"],
+          giscus: ["@giscus/react"],
+          mdx: ["@mdx-js/react"],
+          router: ["react-router-dom"],
+        }
+      }
+    }
+  },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
