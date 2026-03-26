@@ -312,7 +312,7 @@
 }
 
 .post-inner {
-  max-width: 65ch;
+  max-width: clamp(65ch, 80vw, 90ch);
   margin: 0 auto;
 }
 

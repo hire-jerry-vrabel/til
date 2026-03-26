@@ -39,7 +39,7 @@
   --space-16: 4rem;
 
   /* Layout */
-  --max-width: 768px;
+  --max-width: clamp(768px, 90vw, 1100px);
   --border-radius-sm: 0.25rem;
   --border-radius: 0.5rem;
   --border-radius-lg: 0.75rem;
