@@ -1,0 +1,54 @@
+name: Fetch Traffic Data
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 1am CT daily
+  workflow_dispatch:       # allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-traffic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TRAFFIC_TOKEN }}
+
+      - name: Fetch traffic data
+        env:
+          GITHUB_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
+        run: |
+          # Fetch views
+          VIEWS=$(curl -s             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github.v3+json"             "https://api.github.com/repos/hire-jerry-vrabel/til/traffic/views")
+
+          # Fetch clones
+          CLONES=$(curl -s             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github.v3+json"             "https://api.github.com/repos/hire-jerry-vrabel/til/traffic/clones")
+
+          # Fetch popular paths
+          PATHS=$(curl -s             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github.v3+json"             "https://api.github.com/repos/hire-jerry-vrabel/til/traffic/popular/paths")
+
+          # Fetch referrers
+          REFERRERS=$(curl -s             -H "Authorization: token $GITHUB_TOKEN"             -H "Accept: application/vnd.github.v3+json"             "https://api.github.com/repos/hire-jerry-vrabel/til/traffic/popular/referrers")
+
+          # Write to JSON
+          mkdir -p TIL/public
+          echo "{
+            "views": $VIEWS,
+            "clones": $CLONES,
+            "paths": $PATHS,
+            "referrers": $REFERRERS,
+            "updated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }" > TIL/public/traffic.json
+
+          cat TIL/public/traffic.json
+
+      - name: Commit traffic data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add TIL/public/traffic.json
+          git diff --staged --quiet || git commit -m "chore: update traffic data [skip ci]"
+          git push
