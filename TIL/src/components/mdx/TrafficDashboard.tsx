@@ -45,7 +45,7 @@ export function TrafficDashboard() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch("/til/traffic.json")
+    fetch("https://raw.githubusercontent.com/hire-jerry-vrabel/til/main/TIL/public/traffic.json")
       .then(r => {
         if (!r.ok) throw new Error("Traffic data not available yet")
         return r.json()
