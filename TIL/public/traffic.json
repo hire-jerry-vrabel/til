@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 60,
-    "uniques": 2,
+    "count": 102,
+    "uniques": 3,
     "views": [
-      {
-        "timestamp": "2026-03-12T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
       {
         "timestamp": "2026-03-13T00:00:00Z",
         "count": 0,
@@ -72,18 +67,18 @@
         "timestamp": "2026-03-25T00:00:00Z",
         "count": 23,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-03-26T00:00:00Z",
+        "count": 42,
+        "uniques": 3
       }
     ]
   },
   "clones": {
-    "count": 274,
-    "uniques": 110,
+    "count": 421,
+    "uniques": 153,
     "clones": [
-      {
-        "timestamp": "2026-03-12T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
       {
         "timestamp": "2026-03-13T00:00:00Z",
         "count": 0,
@@ -148,6 +143,11 @@
         "timestamp": "2026-03-25T00:00:00Z",
         "count": 139,
         "uniques": 53
+      },
+      {
+        "timestamp": "2026-03-26T00:00:00Z",
+        "count": 147,
+        "uniques": 56
       }
     ]
   },
@@ -155,70 +155,70 @@
     {
       "path": "/hire-jerry-vrabel/til",
       "title": "hire-jerry-vrabel/til: A repo of short entries of things I'm learning.",
-      "count": 23,
-      "uniques": 2
+      "count": 31,
+      "uniques": 3
     },
     {
       "path": "/hire-jerry-vrabel/til/actions",
       "title": "Workflow runs · hire-jerry-vrabel/til",
-      "count": 10,
+      "count": 16,
       "uniques": 2
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/actions/workflows/traffic.yml",
+      "title": "Fetch Traffic Data · Workflow runs · hire-jerry-vrabel/til",
+      "count": 9,
+      "uniques": 1
     },
     {
       "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/App.tsx",
       "title": "til/TIL/src at main · hire-jerry-vrabel/til",
-      "count": 3,
-      "uniques": 1
+      "count": 4,
+      "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til/tree/main/TIL",
       "title": "hire-jerry-vrabel/til: A repo of short entries of things I'm learning.",
-      "count": 3,
-      "uniques": 1
+      "count": 4,
+      "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til/tree/main/TIL/src",
       "title": "til/TIL at main · hire-jerry-vrabel/til",
-      "count": 2,
-      "uniques": 1
+      "count": 3,
+      "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til/tree/main/TIL/src/components",
       "title": "til/TIL/src at main · hire-jerry-vrabel/til",
+      "count": 3,
+      "uniques": 2
+    },
+    {
+      "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/components/PostCard.tsx",
+      "title": "til/TIL/src/components at main · hire-jerry-vrabel/til",
       "count": 2,
-      "uniques": 1
+      "uniques": 2
     },
     {
-      "path": "/hire-jerry-vrabel/til/actions/runs/23518313857",
-      "title": "feat: add YouTube, Vimeo, and local video support with teaser thumbnails · hi...",
-      "count": 1,
-      "uniques": 1
+      "path": "/hire-jerry-vrabel/til/tree/main/TIL/src/pages",
+      "title": "til/TIL/src at main · hire-jerry-vrabel/til",
+      "count": 2,
+      "uniques": 2
     },
     {
-      "path": "/hire-jerry-vrabel/til/actions/runs/23518313857/job/68455727164",
-      "title": "feat: add YouTube, Vimeo, and local video support with teaser thumbnails · hi...",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/package.json",
-      "title": "til/TIL at main · hire-jerry-vrabel/til",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/posts/2026-03-23-gray-matter-browser-safe.md",
-      "title": "til/TIL/posts at main · hire-jerry-vrabel/til",
-      "count": 1,
+      "path": "/hire-jerry-vrabel/til/actions/runs/23574376299/job/68643579905",
+      "title": "Fetch Traffic Data · hire-jerry-vrabel/til@69181e4",
+      "count": 2,
       "uniques": 1
     }
   ],
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 60,
-      "uniques": 2
+      "count": 75,
+      "uniques": 3
     }
   ],
-  "updated": "2026-03-26T21:16:38Z"
+  "updated": "2026-03-27T08:09:56Z"
 }
