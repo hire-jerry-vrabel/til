@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 110,
+    "count": 109,
     "uniques": 3,
     "views": [
-      {
-        "timestamp": "2026-03-17T00:00:00Z",
-        "count": 2,
-        "uniques": 1
-      },
       {
         "timestamp": "2026-03-18T00:00:00Z",
         "count": 1,
@@ -72,18 +67,18 @@
         "timestamp": "2026-03-30T00:00:00Z",
         "count": 1,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-03-31T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   },
   "clones": {
-    "count": 485,
-    "uniques": 177,
+    "count": 489,
+    "uniques": 179,
     "clones": [
-      {
-        "timestamp": "2026-03-17T00:00:00Z",
-        "count": 7,
-        "uniques": 6
-      },
       {
         "timestamp": "2026-03-18T00:00:00Z",
         "count": 5,
@@ -148,6 +143,11 @@
         "timestamp": "2026-03-30T00:00:00Z",
         "count": 12,
         "uniques": 7
+      },
+      {
+        "timestamp": "2026-03-31T00:00:00Z",
+        "count": 11,
+        "uniques": 6
       }
     ]
   },
@@ -155,7 +155,7 @@
     {
       "path": "/hire-jerry-vrabel/til",
       "title": "hire-jerry-vrabel/til: A repo of short entries of things I'm learning.",
-      "count": 34,
+      "count": 33,
       "uniques": 3
     },
     {
@@ -216,9 +216,9 @@
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 82,
+      "count": 81,
       "uniques": 3
     }
   ],
-  "updated": "2026-03-31T09:46:29Z"
+  "updated": "2026-04-01T09:54:35Z"
 }
