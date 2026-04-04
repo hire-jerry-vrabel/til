@@ -60,7 +60,6 @@ export default function TypeScriptPlayground({
   const [code, setCode] = useState(initialCode)
   const outputRef = useRef<HTMLDivElement | null>(null)
 
-  // Scroll output to bottom when new lines arrive
   useEffect(() => {
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight
@@ -71,7 +70,6 @@ export default function TypeScriptPlayground({
     editorRef.current = editor
     monacoRef.current = monaco
 
-    // Configure TypeScript compiler options
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
       module: monaco.languages.typescript.ModuleKind.CommonJS,
@@ -82,6 +80,8 @@ export default function TypeScriptPlayground({
       noUnusedParameters: false,
       allowJs: true,
       jsx: monaco.languages.typescript.JsxEmit.React,
+      declaration: false,
+      removeComments: false,
     })
 
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
@@ -89,7 +89,6 @@ export default function TypeScriptPlayground({
       noSyntaxValidation: false,
     })
 
-    // Editor keybinding: Ctrl/Cmd + Enter to run
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
       () => runCode()
@@ -105,7 +104,6 @@ export default function TypeScriptPlayground({
     const newOutput: OutputLine[] = []
     const ts = monacoRef.current
 
-    // Gather Monaco diagnostics
     const model = editorRef.current.getModel()
     const diags: DiagnosticMessage[] = []
     if (model) {
@@ -126,22 +124,27 @@ export default function TypeScriptPlayground({
     }
     setDiagnostics(diags)
 
-    // Transpile TS → JS via Monaco's worker
     const uri = model?.uri.toString() ?? 'file:///main.ts'
-    let jsCode = currentCode
+    let jsCode = ''
 
     try {
       const worker = await ts.languages.typescript.getTypeScriptWorker()
       const client = await worker(model!.uri)
-      await new Promise(resolve => setTimeout(resolve, 300))
-      const emitOutput = await client.getEmitOutput(uri)
-      if (emitOutput.outputFiles.length > 0 && emitOutput.outputFiles[0].text.trim() !== '') {
-        jsCode = emitOutput.outputFiles[0].text
-      } else {
-        throw new Error('Empty emit')
+
+      for (let i = 0; i < 10; i++) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+        const emitOutput = await client.getEmitOutput(uri)
+        if (
+          emitOutput.outputFiles.length > 0 &&
+          emitOutput.outputFiles[0].text.trim() !== ''
+        ) {
+          jsCode = emitOutput.outputFiles[0].text
+          break
+        }
       }
+
+      if (!jsCode) throw new Error('Worker did not emit output')
     } catch {
-      // Fallback: regex-based type stripping
       jsCode = currentCode
         .replace(/^type\s+.+$/gm, '')
         .replace(/^interface\s+\w+[\s\S]*?\n\}/gm, '')
@@ -150,7 +153,6 @@ export default function TypeScriptPlayground({
         .replace(/^\s*[\r\n]/gm, '')
     }
 
-    // Capture console methods
     const consoleMethods = ['log', 'error', 'warn', 'info'] as const
     type ConsoleMethod = typeof consoleMethods[number]
     const originalConsole: Record<ConsoleMethod, typeof console.log> = {
@@ -192,7 +194,6 @@ export default function TypeScriptPlayground({
         timestamp: Date.now(),
       })
     } finally {
-      // Restore console
       consoleMethods.forEach((method) => {
         ;(console as unknown as Record<string, (...args: unknown[]) => void>)[method] = originalConsole[method]
       })
