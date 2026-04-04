@@ -130,21 +130,26 @@ export default function TypeScriptPlayground({
     const uri = model?.uri.toString() ?? 'file:///main.ts'
     let jsCode = currentCode
 
-    try {
-      const worker = await ts.languages.typescript.getTypeScriptWorker()
-      const client = await worker(model!.uri)
-      const output = await client.getEmitOutput(uri)
-      if (output.outputFiles.length > 0) {
-        jsCode = output.outputFiles[0].text
-      }
-    } catch {
-      // Fallback: strip type annotations crudely (best-effort)
-      jsCode = currentCode
-        .replace(/:\s*\w+(\[\])?(\s*\|?\s*\w+(\[\])?)*(?=[,)=\n{])/g, '')
-        .replace(/<[^>]+>/g, '')
-        .replace(/interface\s+\w+\s*\{[^}]*\}/gs, '')
-        .replace(/type\s+\w+\s*=\s*[^;]+;/g, '')
-    }
+try {
+  const worker = await ts.languages.typescript.getTypeScriptWorker()
+  const client = await worker(model!.uri)
+  // Small delay to ensure worker has processed the model
+  await new Promise(resolve => setTimeout(resolve, 100))
+  const emitOutput = await client.getEmitOutput(uri)
+  if (emitOutput.outputFiles.length > 0) {
+    jsCode = emitOutput.outputFiles[0].text
+  } else {
+    throw new Error('No output files from TypeScript worker')
+  }
+} catch (e) {
+  // Fallback: use Babel-style type stripping via regex (best-effort)
+  jsCode = currentCode
+    .replace(/^type\s+\w+\s*=\s*.+$/gm, '')           // type aliases
+    .replace(/^interface\s+\w+\s*\{[^}]*\}/gms, '')    // interfaces
+    .replace(/:\s*[\w<>\[\] |&]+(?=[,)=\n{;])/g, '')   // type annotations
+    .replace(/<[\w,\s]+>/g, '')                          // generics
+    .replace(/^\s*[\r\n]/gm, '')                         // blank lines left behind
+}
 
     // Capture console methods
     const consoleMethods = ['log', 'error', 'warn', 'info'] as const
