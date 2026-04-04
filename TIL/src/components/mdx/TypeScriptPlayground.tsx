@@ -74,7 +74,7 @@ export default function TypeScriptPlayground({
     // Configure TypeScript compiler options
     monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       target: monaco.languages.typescript.ScriptTarget.ES2020,
-      module: monaco.languages.typescript.ModuleKind.ESNext,
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
       strict: true,
       noImplicitAny: true,
       strictNullChecks: true,
