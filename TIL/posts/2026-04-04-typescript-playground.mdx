@@ -7,7 +7,7 @@ description: "Building a live in-browser TypeScript editor as an MDX component u
 
 # Live TypeScript Playground in MDX
 
-Today I added a **live TypeScript Playground** to this blog, you can write and run TypeScript directly in any post, right in the browser.
+Today I added a **live TypeScript Playground** to this blog — you can write and run TypeScript directly in any post, right in the browser.
 
 No servers, no build step, no iframes. Just Monaco Editor + the TypeScript compiler running in your browser.
 
@@ -24,65 +24,74 @@ function move(dir: Direction, steps: number): string {
 
 console.log(move('north', 3))
 console.log(move('east', 1))
-
-// Uncomment to see a type error:
-// console.log(move('up', 2))
 `} />
 
-## Generics and Utility Types
+## Interfaces and Objects
 
-<TypeScriptPlayground title="Generics" initialCode={`// Generic stack with full type safety
-class Stack<T> {
-  private items: T[] = []
-
-  push(item: T): void {
-    this.items.push(item)
-  }
-
-  pop(): T | undefined {
-    return this.items.pop()
-  }
-
-  peek(): T | undefined {
-    return this.items[this.items.length - 1]
-  }
-
-  get size(): number {
-    return this.items.length
-  }
+<TypeScriptPlayground title="Interfaces" initialCode={`interface User {
+  name: string
+  age: number
+  role: 'admin' | 'viewer'
 }
 
-const stack = new Stack<number>()
-stack.push(1)
-stack.push(2)
-stack.push(3)
+function greet(user: User): string {
+  return \`Hello, \${user.name}! Role: \${user.role}\`
+}
 
-console.log('Size:', stack.size)
-console.log('Peek:', stack.peek())
-console.log('Pop:', stack.pop())
-console.log('Size after pop:', stack.size)
+const jerry: User = {
+  name: 'Jerry',
+  age: 30,
+  role: 'admin',
+}
+
+console.log(greet(jerry))
+console.log('Age:', jerry.age)
+`} />
+
+## Array Methods and Utility Types
+
+<TypeScriptPlayground title="Arrays & Utility Types" initialCode={`interface Post {
+  title: string
+  tags: string[]
+  published: boolean
+}
+
+const posts: Post[] = [
+  { title: 'TypeScript Playground', tags: ['typescript', 'react'], published: true },
+  { title: 'Mermaid Diagrams', tags: ['diagrams'], published: false },
+  { title: 'Monaco Editor', tags: ['typescript', 'editor'], published: true },
+]
+
+const published = posts.filter(p => p.published)
+const titles = published.map(p => p.title)
+
+console.log('Published posts:', titles)
+console.log('Count:', published.length)
+
+const draft = posts.find(p => !p.published)
+console.log('Draft:', draft?.title)
 `} />
 
 ## How It Works
 
 The component is built on:
 
-- **[@monaco-editor/react](https://github.com/suren-atoyan/monaco-editor-react)** the Monaco editor in a React wrapper. Monaco is the engine behind VS Code, so you get IntelliSense, type checking, and syntax highlighting out of the box.
-- **Monaco's TypeScript worker**  Monaco ships with a TypeScript language service worker. I use `getTypeScriptWorker()` to get the emitted JavaScript from the TypeScript compiler, then run it via `new Function()`.
-- **Console capture**  Before running, I monkey-patch `console.log`, `console.error`, etc. to capture output into state, then restore the originals after.
-- **Real-time diagnostics** `monaco.editor.getModelMarkers()` gives me live type errors and warnings that show up in the Diagnostics tab.
+- **[@monaco-editor/react](https://github.com/suren-atoyan/monaco-editor-react)** — the Monaco editor in a React wrapper. Monaco is the engine behind VS Code, so you get IntelliSense, type checking, and syntax highlighting out of the box.
+- **Monaco's TypeScript worker** — Monaco ships with a TypeScript language service worker. I use `getTypeScriptWorker()` to get the emitted JavaScript from the TypeScript compiler, then run it via `new Function()`.
+- **Console capture** — Before running, I monkey-patch `console.log`, `console.error`, etc. to capture output into state, then restore the originals after.
+- **Real-time diagnostics** — `monaco.editor.getModelMarkers()` gives me live type errors and warnings that show up in the Diagnostics tab.
 
 ## The Tricky Parts
 
-**Transpiling TypeScript in the browser** turned out to be simpler than expected. Monaco's worker handles it:
+**Transpiling TypeScript in the browser** turned out to be more nuanced than expected. Monaco's worker handles it via polling:
 
-```ts
+\`\`\`ts
 const worker = await monaco.languages.typescript.getTypeScriptWorker()
-const client = await worker(model.uri)
-const output = await client.getEmitOutput(uri)
-const jsCode = output.outputFiles[0].text
-```
+const client = await worker()
+const emitOutput = await client.getEmitOutput(uri)
+const jsCode = emitOutput.outputFiles[0].text
+\`\`\`
 
-**Theme sync** uses `ThemeContext` so the editor always matches your dark/light mode preference, the same pattern as every other component on this blog.
+**Theme sync** uses `ThemeContext` so the editor always matches your dark/light mode preference.
 
-**Keyboard shortcut** `Ctrl+Enter` / `Cmd+Enter` to run, registered via Monaco's `editor.addCommand()`.
+**Keyboard shortcut** — `Ctrl+Enter` / `Cmd+Enter` to run, registered via Monaco's `editor.addCommand()`.
