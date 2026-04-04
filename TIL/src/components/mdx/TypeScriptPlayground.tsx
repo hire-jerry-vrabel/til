@@ -45,6 +45,15 @@ console.log(greet(user))
 console.log(\`Role: \${user.role}\`)
 `
 
+// Lazy-load the TypeScript compiler once
+let tsCompiler: typeof import('typescript') | null = null
+async function getTypeScript() {
+  if (!tsCompiler) {
+    tsCompiler = await import('typescript')
+  }
+  return tsCompiler
+}
+
 export default function TypeScriptPlayground({
   initialCode = DEFAULT_CODE,
   height = 320,
@@ -59,6 +68,11 @@ export default function TypeScriptPlayground({
   const [activeTab, setActiveTab] = useState<'output' | 'types'>('output')
   const [code, setCode] = useState(initialCode)
   const outputRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    // Warm up the TS compiler in the background
+    getTypeScript()
+  }, [])
 
   useEffect(() => {
     if (outputRef.current) {
@@ -104,6 +118,7 @@ export default function TypeScriptPlayground({
     const newOutput: OutputLine[] = []
     const ts = monacoRef.current
 
+    // Gather Monaco diagnostics
     const model = editorRef.current.getModel()
     const diags: DiagnosticMessage[] = []
     if (model) {
@@ -124,35 +139,32 @@ export default function TypeScriptPlayground({
     }
     setDiagnostics(diags)
 
-    const uri = model?.uri.toString() ?? 'file:///main.ts'
+    // Transpile using the real TypeScript compiler
     let jsCode = ''
-
     try {
-      const worker = await ts.languages.typescript.getTypeScriptWorker()
-      const client = await worker()
-
-      for (let i = 0; i < 10; i++) {
-        await new Promise(resolve => setTimeout(resolve, 100))
-        const emitOutput = await client.getEmitOutput(uri)
-        if (
-          emitOutput.outputFiles.length > 0 &&
-          emitOutput.outputFiles[0].text.trim() !== ''
-        ) {
-          jsCode = emitOutput.outputFiles[0].text
-          break
-        }
-      }
-
-      if (!jsCode) throw new Error('Worker did not emit output')
-    } catch {
-      jsCode = currentCode
-        .replace(/^type\s+.+$/gm, '')
-        .replace(/^interface\s+\w+[\s\S]*?\n\}/gm, '')
-        .replace(/:\s*[\w<>\[\] |&.]+(?=[,)=\n{;])/g, '')
-        .replace(/<([A-Z]\w*)>/g, '')
-        .replace(/^\s*[\r\n]/gm, '')
+      const typescript = await getTypeScript()
+      const result = typescript.transpileModule(currentCode, {
+        compilerOptions: {
+          target: typescript.ScriptTarget.ES2020,
+          module: typescript.ModuleKind.CommonJS,
+          strict: false,
+          jsx: typescript.JsxEmit.React,
+          removeComments: false,
+        },
+      })
+      jsCode = result.outputText
+    } catch (err) {
+      newOutput.push({
+        type: 'error',
+        text: err instanceof Error ? err.message : String(err),
+        timestamp: Date.now(),
+      })
+      setOutput(newOutput)
+      setIsRunning(false)
+      return
     }
 
+    // Capture console methods
     const consoleMethods = ['log', 'error', 'warn', 'info'] as const
     type ConsoleMethod = typeof consoleMethods[number]
     const originalConsole: Record<ConsoleMethod, typeof console.log> = {

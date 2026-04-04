@@ -12,6 +12,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          typescript: ["typescript"],
           recharts: ["recharts"],
           giscus: ["@giscus/react"],
           mdx: ["@mdx-js/react"],
@@ -74,6 +75,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         clientsClaim: true,
       },
