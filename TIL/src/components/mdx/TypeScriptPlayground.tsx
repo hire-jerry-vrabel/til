@@ -129,7 +129,7 @@ export default function TypeScriptPlayground({
 
     try {
       const worker = await ts.languages.typescript.getTypeScriptWorker()
-      const client = await worker(model!.uri)
+      const client = await worker()
 
       for (let i = 0; i < 10; i++) {
         await new Promise(resolve => setTimeout(resolve, 100))
