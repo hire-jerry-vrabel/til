@@ -18,8 +18,10 @@ import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
 import { TrafficDashboard } from "../components/mdx/TrafficDashboard"
 import { CubsWTracker } from "../components/mdx/CubsWTracker"
 import { PostComments } from "../components/mdx/PostComments"
+import TypeScriptPlayground from '../components/mdx/TypeScriptPlayground'
 
 const mdxComponents = {
+  TypeScriptPlayground,
   YouTube,
   Vimeo,
   Video,
@@ -69,20 +71,17 @@ export function Post() {
     onRight: goNext,
   })
 
-  useEffect(() => {
-    if (post) {
-      useOGTags({
-        title: post.title,
-        description: post.excerpt,
-        image: post.image,
-        url: `/post/${post.slug}`,
-        type: "article",
-      })
-    }
-    return () => {
-      resetOGTags()
-    }
-  }, [post])
+  useOGTags({
+  title: post?.title ?? '',
+  description: post?.excerpt ?? '',
+  image: post?.image,
+  url: post ? `/post/${post.slug}` : '/',
+  type: 'article',
+})
+
+useEffect(() => {
+  return () => resetOGTags()
+}, [])
 
   if (!post) {
     return (

@@ -1,0 +1,88 @@
+---
+title: "Live TypeScript Playground in MDX"
+date: "2025-01-20"
+tags: ["typescript", "react", "monaco", "til"]
+description: "Building a live in-browser TypeScript editor as an MDX component using Monaco Editor — the same engine that powers VS Code."
+---
+
+# Live TypeScript Playground in MDX
+
+Today I added a **live TypeScript Playground** to this blog — you can write and run TypeScript directly in any post, right in the browser.
+
+No servers, no build step, no iframes. Just Monaco Editor + the TypeScript compiler running in your browser.
+
+## Try It
+
+Edit the code below and press **▶ Run** (or `Ctrl+Enter`):
+
+<TypeScriptPlayground title="Basic Types" initialCode={`// Try editing this!
+type Direction = 'north' | 'south' | 'east' | 'west'
+
+function move(dir: Direction, steps: number): string {
+  return \`Moving \${steps} step(s) \${dir}\`
+}
+
+console.log(move('north', 3))
+console.log(move('east', 1))
+
+// Uncomment to see a type error:
+// console.log(move('up', 2))
+`} />
+
+## Generics and Utility Types
+
+<TypeScriptPlayground title="Generics" initialCode={`// Generic stack with full type safety
+class Stack<T> {
+  private items: T[] = []
+
+  push(item: T): void {
+    this.items.push(item)
+  }
+
+  pop(): T | undefined {
+    return this.items.pop()
+  }
+
+  peek(): T | undefined {
+    return this.items[this.items.length - 1]
+  }
+
+  get size(): number {
+    return this.items.length
+  }
+}
+
+const stack = new Stack<number>()
+stack.push(1)
+stack.push(2)
+stack.push(3)
+
+console.log('Size:', stack.size)
+console.log('Peek:', stack.peek())
+console.log('Pop:', stack.pop())
+console.log('Size after pop:', stack.size)
+`} />
+
+## How It Works
+
+The component is built on:
+
+- **[@monaco-editor/react](https://github.com/suren-atoyan/monaco-editor-react)** — the Monaco editor in a React wrapper. Monaco is the engine behind VS Code, so you get IntelliSense, type checking, and syntax highlighting out of the box.
+- **Monaco's TypeScript worker** — Monaco ships with a TypeScript language service worker. I use `getTypeScriptWorker()` to get the emitted JavaScript from the TypeScript compiler, then run it via `new Function()`.
+- **Console capture** — Before running, I monkey-patch `console.log`, `console.error`, etc. to capture output into state, then restore the originals after.
+- **Real-time diagnostics** — `monaco.editor.getModelMarkers()` gives me live type errors and warnings that show up in the Diagnostics tab.
+
+## The Tricky Parts
+
+**Transpiling TypeScript in the browser** turned out to be simpler than expected. Monaco's worker handles it:
+
+```ts
+const worker = await monaco.languages.typescript.getTypeScriptWorker()
+const client = await worker(model.uri)
+const output = await client.getEmitOutput(uri)
+const jsCode = output.outputFiles[0].text
+```
+
+**Theme sync** uses `ThemeContext` so the editor always matches your dark/light mode preference — the same pattern as every other component on this blog.
+
+**Keyboard shortcut** — `Ctrl+Enter` / `Cmd+Enter` to run, registered via Monaco's `editor.addCommand()`.
