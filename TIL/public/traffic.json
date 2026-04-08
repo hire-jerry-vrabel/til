@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 123,
+    "count": 104,
     "uniques": 4,
     "views": [
-      {
-        "timestamp": "2026-03-24T00:00:00Z",
-        "count": 19,
-        "uniques": 2
-      },
       {
         "timestamp": "2026-03-25T00:00:00Z",
         "count": 23,
@@ -72,18 +67,18 @@
         "timestamp": "2026-04-06T00:00:00Z",
         "count": 1,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-04-07T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 565,
-    "uniques": 203,
+    "count": 477,
+    "uniques": 174,
     "clones": [
-      {
-        "timestamp": "2026-03-24T00:00:00Z",
-        "count": 91,
-        "uniques": 40
-      },
       {
         "timestamp": "2026-03-25T00:00:00Z",
         "count": 139,
@@ -148,6 +143,11 @@
         "timestamp": "2026-04-06T00:00:00Z",
         "count": 14,
         "uniques": 8
+      },
+      {
+        "timestamp": "2026-04-07T00:00:00Z",
+        "count": 3,
+        "uniques": 3
       }
     ]
   },
@@ -155,13 +155,13 @@
     {
       "path": "/hire-jerry-vrabel/til/actions",
       "title": "/actions",
-      "count": 43,
+      "count": 40,
       "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til",
       "title": "Overview",
-      "count": 36,
+      "count": 23,
       "uniques": 4
     },
     {
@@ -171,14 +171,14 @@
       "uniques": 1
     },
     {
-      "path": "/hire-jerry-vrabel/til/tree/main/TIL",
-      "title": "/tree/main/TIL",
-      "count": 3,
+      "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/App.tsx",
+      "title": "/blob/main/TIL/src/App.tsx",
+      "count": 2,
       "uniques": 2
     },
     {
-      "path": "/hire-jerry-vrabel/til/blob/main/TIL/src/App.tsx",
-      "title": "/blob/main/TIL/src/App.tsx",
+      "path": "/hire-jerry-vrabel/til/tree/main/TIL",
+      "title": "/tree/main/TIL",
       "count": 2,
       "uniques": 2
     },
@@ -216,9 +216,9 @@
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 94,
+      "count": 75,
       "uniques": 4
     }
   ],
-  "updated": "2026-04-07T09:53:00Z"
+  "updated": "2026-04-08T09:52:23Z"
 }
