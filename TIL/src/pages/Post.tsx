@@ -76,7 +76,6 @@ export function Post() {
   useOGTags({
   title: post?.title ?? '',
   description: post?.excerpt ?? '',
-  image: post?.image,
   url: post ? `/post/${post.slug}` : '/',
   image: post ? `/til/og/${post.slug}.png` : null,
   type: 'article',
