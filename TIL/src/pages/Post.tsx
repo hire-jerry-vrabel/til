@@ -17,11 +17,13 @@ import { CodeQuiz } from "../components/mdx/CodeQuiz"
 import { AnimationPlayground } from "../components/mdx/AnimationPlayground"
 import { TrafficDashboard } from "../components/mdx/TrafficDashboard"
 import { CubsWTracker } from "../components/mdx/CubsWTracker"
+import { Mermaid } from '../components/mdx/Mermaid'
 import { PostComments } from "../components/mdx/PostComments"
 import TypeScriptPlayground from '../components/mdx/TypeScriptPlayground'
 
 const mdxComponents = {
   TypeScriptPlayground,
+  Mermaid,
   YouTube,
   Vimeo,
   Video,

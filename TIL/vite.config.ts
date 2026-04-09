@@ -13,6 +13,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           typescript: ["typescript"],
+          mermaid: ["mermaid"],
           recharts: ["recharts"],
           giscus: ["@giscus/react"],
           mdx: ["@mdx-js/react"],

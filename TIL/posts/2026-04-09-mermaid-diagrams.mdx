@@ -1,0 +1,51 @@
+---
+title: "Mermaid Diagrams in MDX"
+date: "2026-04-09"
+tags: ["mermaid", "diagrams", "react", "til"]
+description: "Adding inline Mermaid diagram support to the TIL blog — drop a chart into any post with a single component tag."
+---
+
+# Mermaid Diagrams in MDX
+
+Today I added inline **Mermaid diagram** support to the blog. Drop a `<Mermaid>` component anywhere in a post and it renders a diagram from a simple text description.
+
+## Flowchart
+
+<Mermaid chart={`flowchart TD
+  A[Write MDX Post] --> B{Has Diagram?}
+  B -- Yes --> C[Add Mermaid Component]
+  B -- No --> D[Just Write Prose]
+  C --> E[Renders as SVG]
+  D --> E
+  E --> F[Push to GitHub Pages]`} caption="Post publishing flow" />
+
+## Sequence Diagram
+
+<Mermaid chart={`sequenceDiagram
+  participant Browser
+  participant ServiceWorker
+  participant GitHub Pages
+  Browser->>ServiceWorker: Request page
+  ServiceWorker->>ServiceWorker: Check cache
+  ServiceWorker->>GitHub Pages: Fetch if stale
+  GitHub Pages-->>ServiceWorker: Return assets
+  ServiceWorker-->>Browser: Serve response`} caption="PWA request flow" />
+
+## Git Graph
+
+<Mermaid chart={`gitGraph
+  commit id: "init"
+  commit id: "add TypeScript Playground"
+  branch feature/mermaid
+  commit id: "add Mermaid component"
+  commit id: "add showcase post"
+  checkout main
+  merge feature/mermaid id: "ship it"`} caption="This feature's git history" />
+
+## How It Works
+
+Just one package — `mermaid` — lazy-loaded on first render so it doesn't impact page load. The component watches `ThemeContext` and re-renders with `dark` or `default` theme automatically.
+
+\`\`\`jsx
+<Mermaid chart={`graph TD; A-->B; B-->C`} caption="Optional caption" />
+\`\`\`
