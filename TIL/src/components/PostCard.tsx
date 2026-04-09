@@ -76,18 +76,24 @@ export function PostCard({ post }: Props) {
     <>
       <article className="post-card">
         {teaserImage && (
-          <div
-            className={`post-card-image${isVideo ? " is-video" : ""}`}
-            onClick={isVideo ? () => setModalOpen(true) : undefined}
-            style={{ cursor: isVideo ? "pointer" : "default" }}
-          >
-            <img src={teaserImage} alt={post.title} />
-            {isVideo && (
+          isVideo ? (
+            <div
+              className="post-card-image is-video"
+              onClick={() => setModalOpen(true)}
+              style={{ cursor: "pointer" }}
+            >
+              <img src={teaserImage} alt={post.title} />
               <div className="post-card-play">
                 <span className="post-card-play-icon">▶</span>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <Link to={`/post/${post.slug}`} className="post-card-image-link">
+              <div className="post-card-image">
+                <img src={teaserImage} alt={post.title} />
+              </div>
+            </Link>
+          )
         )}
         <div className="post-card-body">
           <Link to={`/post/${post.slug}`} className="post-card-link">
