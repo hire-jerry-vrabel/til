@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npx tsx scripts/generate-rss.ts",
+    "build": "tsc -b && vite build && npx tsx scripts/generate-rss.ts && npx tsx scripts/generate-og-images.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
+    "@fontsource/inter": "^5.2.8",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^24.6.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
@@ -37,6 +39,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.23",
     "globals": "^16.4.0",
+    "satori": "^0.26.0",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",

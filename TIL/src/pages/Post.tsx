@@ -78,6 +78,7 @@ export function Post() {
   description: post?.excerpt ?? '',
   image: post?.image,
   url: post ? `/post/${post.slug}` : '/',
+  image: post ? `/til/og/${post.slug}.png` : null,
   type: 'article',
 })
 
