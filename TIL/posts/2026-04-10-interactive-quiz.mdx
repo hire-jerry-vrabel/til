@@ -1,0 +1,84 @@
+---
+title: "Interactive Quiz Component in MDX"
+date: "2026-04-10"
+tags: ["react", "mdx", "typescript", "til"]
+description: "A general-purpose Quiz component for MDX posts — multiple choice, true/false, and free text questions with scoring."
+---
+
+# Interactive Quiz Component in MDX
+
+Today I built a general-purpose `<Quiz />` component for the blog. Drop questions into any post and readers can test their knowledge directly on the page.
+
+## Try It — TypeScript Quiz
+
+<Quiz title="TypeScript Fundamentals" questions={[
+  {
+    type: "multiple-choice",
+    question: "What does the 'readonly' modifier do in TypeScript?",
+    options: [
+      "Prevents a property from being accessed",
+      "Prevents a property from being reassigned after initialization",
+      "Makes a property optional",
+      "Converts a property to a string"
+    ],
+    answer: "Prevents a property from being reassigned after initialization",
+    explanation: "readonly prevents reassignment but does not make the value deeply immutable."
+  },
+  {
+    type: "true-false",
+    question: "TypeScript is a superset of JavaScript — all valid JavaScript is valid TypeScript.",
+    answer: true,
+    explanation: "TypeScript extends JavaScript with optional static typing. Any valid JS file is a valid TS file."
+  },
+  {
+    type: "multiple-choice",
+    question: "Which utility type makes all properties of T optional?",
+    options: ["Required<T>", "Partial<T>", "Readonly<T>", "Pick<T>"],
+    answer: "Partial<T>",
+    explanation: "Partial<T> constructs a type with all properties of T set to optional."
+  },
+  {
+    type: "free-text",
+    question: "What keyword is used to narrow a type inside a conditional block?",
+    answer: ["typeof", "instanceof"],
+    explanation: "Both typeof and instanceof are type guards that narrow types in conditional blocks."
+  },
+  {
+    type: "true-false",
+    question: "The 'never' type can be assigned to any other type.",
+    answer: false,
+    explanation: "never is a bottom type — it can be assigned to nothing. It represents values that never occur."
+  }
+]} />
+
+## How It Works
+
+Three question types are supported:
+
+- **Multiple choice** — radio buttons, one correct answer
+- **True/false** — two options, answer is a boolean
+- **Free text** — text input, accepts a string or array of acceptable answers (case-insensitive)
+
+All questions are answered before submitting. On submit, a score summary shows correct/incorrect per question with optional explanations.
+
+\`\`\`mdx
+<Quiz title="My Quiz" questions={[
+  {
+    type: "multiple-choice",
+    question: "What is 2 + 2?",
+    options: ["3", "4", "5"],
+    answer: "4",
+    explanation: "Basic arithmetic."
+  },
+  {
+    type: "true-false",
+    question: "The sky is blue.",
+    answer: true
+  },
+  {
+    type: "free-text",
+    question: "What language runs in the browser?",
+    answer: ["javascript", "js"]
+  }
+]} />
+\`\`\`
