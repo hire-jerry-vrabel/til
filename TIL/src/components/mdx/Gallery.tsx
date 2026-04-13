@@ -65,7 +65,7 @@ export function Gallery({ images, title, showThumbs = true, fullBleed = false }:
           <SwiperSlide key={i}>
             <div className="gallery__slide-inner">
               <img
-                data-src={img.src}
+                src={img.src}
                 alt={img.alt}
                 className="gallery__img"
               />
