@@ -1,7 +1,39 @@
 import os
 
-files = sorted(os.listdir('public/images/bash'), key=lambda f: int(f.replace('bash-','').split('.')[0]))
-images = ',\n  '.join([f'{{ src: "/til/images/bash/{f}", alt: "Bash" }}' for f in files])
+image_dir = 'public/images/bash'
+valid_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp'}
+
+# Get all image files
+files = [f for f in os.listdir(image_dir) if os.path.splitext(f)[1].lower() in valid_extensions]
+
+# Sort: existing bash-N files numerically first, then new files alphabetically at the end
+def sort_key(f):
+    name = os.path.splitext(f)[0]
+    if name.startswith('bash-'):
+        try:
+            return (0, int(name.replace('bash-', '')))
+        except ValueError:
+            pass
+    return (1, f)
+
+files.sort(key=sort_key)
+
+# Rename all files sequentially with lowercase extensions
+renamed = []
+for i, f in enumerate(files, start=1):
+    ext = os.path.splitext(f)[1].lower()
+    new_name = f'bash-{i}{ext}'
+    src = os.path.join(image_dir, f)
+    dst = os.path.join(image_dir, new_name)
+    if src != dst:
+        os.rename(src, dst)
+        print(f'  {f} → {new_name}')
+    renamed.append(new_name)
+
+print(f'Renamed {len(renamed)} files')
+
+# Generate Bash.tsx
+images = ',\n  '.join([f'{{ src: "/til/images/bash/{f}", alt: "Bash" }}' for f in renamed])
 
 content = f'''import {{ useState }} from 'react'
 import {{ Gallery }} from '../components/mdx/Gallery'
@@ -28,7 +60,7 @@ export function Bash() {{
       <div className="bash-page__hero">
         <h1 className="bash-page__title">Bash 🐾</h1>
         <p className="bash-page__subtitle">
-          Good boy. Senior software engineer in training. {len(files)} photos and counting.
+          Good boy. Senior software engineer in training. {len(renamed)} photos and counting.
         </p>
       </div>
       <Gallery
@@ -55,4 +87,4 @@ export function Bash() {{
 
 with open('src/pages/Bash.tsx', 'w') as f:
     f.write(content)
-print(f'Bash.tsx updated with {len(files)} images')
+print(f'Bash.tsx updated with {len(renamed)} images')
