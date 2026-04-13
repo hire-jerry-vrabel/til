@@ -14,6 +14,8 @@ export default defineConfig({
         manualChunks: {
           typescript: ["typescript"],
           mermaid: ["mermaid"],
+          swiper: ["swiper"],
+          yarl: ["yet-another-react-lightbox"],
           recharts: ["recharts"],
           giscus: ["@giscus/react"],
           mdx: ["@mdx-js/react"],
@@ -76,6 +78,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        globIgnores: ["images/bash/**"],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         clientsClaim: true,
