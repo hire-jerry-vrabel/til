@@ -1,0 +1,35 @@
+---
+title: "Building a Photo Gallery for Bash"
+date: "2026-04-13"
+tags: ["react", "swiper", "gallery", "bash", "til"]
+description: "Building a swipe-friendly photo gallery with Swiper.js and yet-another-react-lightbox for my dog Bash — 337 photos and counting."
+---
+
+# Building a Photo Gallery for Bash
+
+Every dev blog needs a dog. This is Bash.
+
+I built a swipe-friendly gallery component using **Swiper.js** for the main carousel and **yet-another-react-lightbox** for the fullscreen experience. Swipe left/right on mobile, arrow keys on desktop, tap any photo to enlarge with pinch-to-zoom.
+
+<Gallery title="Bash 🐾" images={[
+  { src: "/til/images/bash/bash-1.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-2.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-3.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-4.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-5.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-6.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-7.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-8.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-9.jpg", alt: "Bash" },
+  { src: "/til/images/bash/bash-10.jpg", alt: "Bash" }
+]} />
+
+Want to see all 337 photos? [Visit the Bash page →](/til/bash)
+
+## How It Works
+
+The `<Gallery />` component takes an `images` array and renders a Swiper carousel with a thumbnail strip. Clicking any slide opens YARL's lightbox with zoom, slideshow, and counter plugins.
+
+The full gallery lives at [/bash](/til/bash) — it opens straight into the lightbox so you get the full immersive experience immediately.
+
+Managing 337 photos is handled by a Python script — `npm run bash:sync` renames everything sequentially and regenerates the page. Drop new photos in, run the script, push.
