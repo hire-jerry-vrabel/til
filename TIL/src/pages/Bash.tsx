@@ -25,15 +25,12 @@ const images = [
   { src: "/til/images/bash/bash-22.png", alt: "Bash" },
   { src: "/til/images/bash/bash-24.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-26.png", alt: "Bash" },
-  { src: "/til/images/bash/bash-27.png", alt: "Bash" },
   { src: "/til/images/bash/bash-29.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-30.jpg", alt: "Bash" },
-  { src: "/til/images/bash/bash-31.png", alt: "Bash" },
   { src: "/til/images/bash/bash-33.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-34.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-35.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-36.jpg", alt: "Bash" },
-  { src: "/til/images/bash/bash-37.png", alt: "Bash" },
   { src: "/til/images/bash/bash-39.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-40.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-41.jpg", alt: "Bash" },
@@ -51,7 +48,6 @@ const images = [
   { src: "/til/images/bash/bash-53.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-54.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-56.jpg", alt: "Bash" },
-  { src: "/til/images/bash/bash-57.png", alt: "Bash" },
   { src: "/til/images/bash/bash-58.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-60.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-61.jpg", alt: "Bash" },
@@ -88,7 +84,6 @@ const images = [
   { src: "/til/images/bash/bash-96.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-97.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-98.jpg", alt: "Bash" },
-  { src: "/til/images/bash/bash-99.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-100.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-101.jpg", alt: "Bash" },
   { src: "/til/images/bash/bash-102.jpg", alt: "Bash" },
@@ -307,16 +302,14 @@ export function Bash() {
       <div className="bash-page__hero">
         <h1 className="bash-page__title">Bash 🐾</h1>
         <p className="bash-page__subtitle">
-          Good boy. Senior software engineer in training. 285 photos and counting.
+          Good boy. Senior software engineer in training. 280 photos and counting.
         </p>
       </div>
-
       <Gallery
         images={images}
         showThumbs
         fullBleed
       />
-
       <Lightbox
         open={lightboxIndex >= 0}
         close={() => setLightboxIndex(-1)}

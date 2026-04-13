@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npx tsx scripts/generate-rss.ts && npx tsx scripts/generate-og-images.ts",
+    "bash:sync": "python3 scripts/generate-bash.py",
     "lint": "eslint .",
     "preview": "vite preview"
   },
