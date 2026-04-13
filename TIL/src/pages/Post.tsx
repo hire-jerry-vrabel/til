@@ -21,9 +21,11 @@ import { Mermaid } from '../components/mdx/Mermaid'
 import { Quiz } from '../components/mdx/Quiz'
 import { PostComments } from "../components/mdx/PostComments"
 import TypeScriptPlayground from '../components/mdx/TypeScriptPlayground'
+import { Gallery } from '../components/mdx/Gallery'
 
 const mdxComponents = {
   TypeScriptPlayground,
+  Gallery,
   Mermaid,
   Quiz,
   YouTube,
