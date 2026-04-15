@@ -93,8 +93,8 @@ const CHICAGO_TEAMS = [
   { sport: 'football', league: 'nfl', name: 'Bears', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
   { sport: 'basketball', league: 'nba', name: 'Bulls', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
   { sport: 'hockey', league: 'nhl', name: 'Blackhawks', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/chic.png' },
-  { sport: 'soccer', league: 'usa.1', name: 'Fire FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/chicago-fire.png' },
-  { sport: 'soccer', league: 'usa.nwsl', name: 'Stars FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/chicago-red-stars.png' },
+  { sport: 'soccer', league: 'usa.1', name: 'Fire FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/182.png' },
+  { sport: 'soccer', league: 'usa.nwsl', name: 'Stars FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/15360.png' },
   { sport: 'basketball', league: 'wnba', name: 'Sky', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/wnba/500/chi.png' },
 ]
 
