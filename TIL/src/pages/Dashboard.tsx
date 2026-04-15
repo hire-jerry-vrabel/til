@@ -49,13 +49,18 @@ interface CTATrain {
   destination: string
   minutes: number | string
   delayed: boolean
+  isApproaching: boolean
 }
-
 interface CTAStation {
   name: string
   trains: CTATrain[]
+  hasDelays: boolean
 }
-
+interface CTATravelConditions {
+  loopToHoward: number
+  condition: 'normal' | 'rush' | 'delayed'
+  label: string
+}
 interface AIInsight {
   text: string
   loading: boolean
@@ -109,7 +114,7 @@ function getCTATravelConditions(stations: CTAStation[]): CTATravelConditions {
   const hasDelays = stations.some(s => s.hasDelays)
 
   let loopToHoward = BASE_LOOP_HOWARD
-  let condition: CTATravelConditions['condition'] = 'normal'
+  let condition: 'normal' | 'rush' | 'delayed' = 'normal'
   let label = '✓ Normal service'
 
   if (hasDelays) {
