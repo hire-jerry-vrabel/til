@@ -78,6 +78,7 @@ interface AIInsight {
 
 const LAT = 41.9981
 const LNG = -87.6673
+const PROXY_URL = 'https://til-proxy.hire-jerry-vrabel.workers.dev'
 
 const WEATHER_CODES: Record<number, string> = {
   0: 'Clear', 1: 'Mostly Clear', 2: 'Partly Cloudy', 3: 'Overcast',
@@ -395,14 +396,11 @@ export function Dashboard() {
   }
 
   const fetchCTA = async () => {
-    const key = import.meta.env.VITE_CTA_API_KEY
-    if (!key) return
-
-    // Fetch station arrivals
+    // Fetch station arrivals via proxy
     const results = await Promise.allSettled(
       CTA_STATIONS.map(async station => {
         const res = await fetch(
-          `https://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${key}&mapid=${station.id}&outputType=JSON`
+          `${PROXY_URL}/cta/arrivals?mapid=${station.id}`
         )
         const data = await res.json()
         const etas = data.ctatt?.eta ?? []
@@ -439,10 +437,10 @@ export function Dashboard() {
       .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false, mapTrains: [] })
     setCta(stations)
 
-    // Fetch live train positions via ttpositions endpoint for the map
+    // Fetch live train positions via proxy
     try {
       const posRes = await fetch(
-        `https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?key=${key}&rt=red&outputType=JSON`
+        `${PROXY_URL}/cta/positions?rt=red`
       )
       const posData = await posRes.json()
       const routes = posData.ctatt?.route ?? []
@@ -491,7 +489,7 @@ export function Dashboard() {
     `.trim()
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(`${PROXY_URL}/ai/insight`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
