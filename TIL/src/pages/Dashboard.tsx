@@ -170,7 +170,7 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
     return PAD + ((MAX_LAT - lat) / (MAX_LAT - MIN_LAT)) * (H - PAD * 2)
   }
 
-  const trackColor = isDark ? '#c60c30' : '#c60c30'
+  const trackColor = '#c60c30'
   const bgColor = isDark ? '#0a0f1e' : '#f8fafc'
   const labelColor = isDark ? '#e2e8f0' : '#1e293b'
   const stationBg = isDark ? '#0a0f1e' : '#fff'
@@ -327,9 +327,23 @@ export function Dashboard() {
         }
       })
     )
-    setSports(results.map((r, i) =>
+    const mapped = results.map((r, i) =>
       r.status === 'fulfilled' ? r.value : { name: CHICAGO_TEAMS[i].name, logo: '', status: 'Unavailable', detail: '' }
-    ))
+    )
+    // Sort: live games first, then upcoming by time, then completed, then no game/unavailable
+    const sorted = mapped.sort((a, b) => {
+      const priority = (t: SportsTeam) => {
+        if (t.status === 'No game scheduled' || t.status === 'Unavailable') return 3
+        if (t.score !== undefined && t.win === undefined) return 0 // live
+        if (t.score !== undefined) return 2 // completed
+        return 1 // upcoming
+      }
+      const pa = priority(a)
+      const pb = priority(b)
+      if (pa !== pb) return pa - pb
+      return a.status.localeCompare(b.status)
+    })
+    setSports(sorted)
   }
 
   const fetchGitHub = async () => {
@@ -384,6 +398,7 @@ export function Dashboard() {
     const key = import.meta.env.VITE_CTA_API_KEY
     if (!key) return
 
+    // Fetch station arrivals
     const results = await Promise.allSettled(
       CTA_STATIONS.map(async station => {
         const res = await fetch(
@@ -404,7 +419,6 @@ export function Dashboard() {
           }
         })
         const hasDelays = trains.some(t => t.delayed)
-        // Use ALL etas for map positions, not just sliced ones
         const mapTrains: CTAMapTrain[] = etas
           .filter((e: any) => {
             const lat = parseFloat(e.lat)
@@ -424,15 +438,40 @@ export function Dashboard() {
     const stations = results
       .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false, mapTrains: [] })
     setCta(stations)
-    // Collect all unique map trains across stations
-    const allMapTrains = Array.from(
-      new Map(
-        stations
-          .flatMap(s => s.mapTrains)
-          .map(t => [`${t.lat}-${t.lon}`, t])
-      ).values()
-    )
-    setMapTrains(allMapTrains)
+
+    // Fetch live train positions via ttpositions endpoint for the map
+    try {
+      const posRes = await fetch(
+        `https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?key=${key}&rt=red&outputType=JSON`
+      )
+      const posData = await posRes.json()
+      const routes = posData.ctatt?.route ?? []
+      const posTrains: CTAMapTrain[] = routes
+        .flatMap((r: any) => r.train ?? [])
+        .filter((t: any) => {
+          const lat = parseFloat(t.lat)
+          const lon = parseFloat(t.lon)
+          return !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0
+        })
+        .map((t: any) => ({
+          lat: parseFloat(t.lat),
+          lon: parseFloat(t.lon),
+          line: 'red',
+          destination: t.destNm ?? '',
+          heading: t.heading ?? null,
+        }))
+      setMapTrains(posTrains)
+    } catch {
+      // Fall back to station-derived positions from arrivals data
+      const allMapTrains = Array.from(
+        new Map(
+          stations
+            .flatMap(s => s.mapTrains)
+            .map(t => [`${t.lat}-${t.lon}`, t])
+        ).values()
+      )
+      setMapTrains(allMapTrains)
+    }
   }
 
   const fetchInsight = useCallback(async (
@@ -705,41 +744,41 @@ export function Dashboard() {
           {cta.length > 0 ? (
             <>
               <div className="dashboard__cta-panel">
-              <CTAMap trains={mapTrains} isDark={isDark} />
-              <div className="dashboard__cta-panel-arrivals">
-              <div className="dashboard__cta-stations">
-                {cta.map((station, i) => (
-                  <div key={i} className="dashboard__cta-station">
-                    <div className="dashboard__cta-station-name">{station.name}</div>
-                    {station.trains.length > 0 ? (
-                      <div className="dashboard__cta-trains">
-                        {station.trains.slice(0, 2).map((train, j) => (
-                          <div key={j} className="dashboard__cta-train">
-                            <span className={`dashboard__cta-line dashboard__cta-line--${train.line}`}>
-                              {train.line}
-                            </span>
-                            <span className="dashboard__cta-dest">{train.destination}</span>
-                            <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}${train.isApproaching ? ' dashboard__cta-time--approaching' : ''}`}>
-                              {train.minutes === 'Due' ? 'Due' : `${train.minutes}m`}
-                              {train.delayed && ' ⚠'}
-                              {train.isApproaching && !train.delayed && ' →'}
-                            </span>
+                <CTAMap trains={mapTrains} isDark={isDark} />
+                <div className="dashboard__cta-panel-arrivals">
+                  <div className="dashboard__cta-stations">
+                    {cta.map((station, i) => (
+                      <div key={i} className="dashboard__cta-station">
+                        <div className="dashboard__cta-station-name">{station.name}</div>
+                        {station.trains.length > 0 ? (
+                          <div className="dashboard__cta-trains">
+                            {station.trains.slice(0, 2).map((train, j) => (
+                              <div key={j} className="dashboard__cta-train">
+                                <span className={`dashboard__cta-line dashboard__cta-line--${train.line}`}>
+                                  {train.line}
+                                </span>
+                                <span className="dashboard__cta-dest">{train.destination}</span>
+                                <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}${train.isApproaching ? ' dashboard__cta-time--approaching' : ''}`}>
+                                  {train.minutes === 'Due' ? 'Due' : `${train.minutes}m`}
+                                  {train.delayed && ' ⚠'}
+                                  {train.isApproaching && !train.delayed && ' →'}
+                                </span>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        ) : (
+                          <div className="dashboard__cta-trains">
+                            <div className="dashboard__cta-train dashboard__cta-train--sched">
+                              <span className="dashboard__cta-line dashboard__cta-line--red">Red</span>
+                              <span className="dashboard__cta-dest">Scheduled</span>
+                              <span className="dashboard__cta-time">~</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <div className="dashboard__cta-trains">
-                        <div className="dashboard__cta-train dashboard__cta-train--sched">
-                          <span className="dashboard__cta-line dashboard__cta-line--red">Red</span>
-                          <span className="dashboard__cta-dest">Scheduled</span>
-                          <span className="dashboard__cta-time">~</span>
-                        </div>
-                      </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-              </div>
+                </div>
               </div>
               {(() => {
                 const conditions = getCTATravelConditions(cta)
