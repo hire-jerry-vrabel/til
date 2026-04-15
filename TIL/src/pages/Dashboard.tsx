@@ -55,11 +55,19 @@ interface CTAStation {
   name: string
   trains: CTATrain[]
   hasDelays: boolean
+  mapTrains: CTAMapTrain[]
 }
 interface CTATravelConditions {
   loopToHoward: number
   condition: 'normal' | 'rush' | 'delayed'
   label: string
+}
+interface CTAMapTrain {
+  lat: number
+  lon: number
+  line: string
+  destination: string
+  heading: string | null
 }
 interface AIInsight {
   text: string
@@ -105,6 +113,27 @@ const CTA_STATIONS = [
   { id: '41300', name: 'Loyola', direction: 'Loop' },
 ]
 
+// Red Line station coordinates (north to south)
+const RED_LINE_STATIONS = [
+  { name: 'Howard',     lat: 42.01900, lon: -87.67280, id: '40900' },
+  { name: 'Jarvis',     lat: 41.99640, lon: -87.66990, id: '41190' },
+  { name: 'Morse',      lat: 41.98360, lon: -87.66560, id: '40100' },
+  { name: 'Loyola',     lat: 41.96880, lon: -87.65910, id: '41300' },
+  { name: 'Granville',  lat: 41.99450, lon: -87.65800, id: '41420' },
+  { name: 'Thorndale',  lat: 41.99000, lon: -87.65900, id: '40880' },
+  { name: 'Bryn Mawr',  lat: 41.98350, lon: -87.66000, id: '41380' },
+  { name: 'Berwyn',     lat: 41.97740, lon: -87.65840, id: '40340' },
+  { name: 'Argyle',     lat: 41.97360, lon: -87.65880, id: '41200' },
+  { name: 'Lawrence',   lat: 41.96900, lon: -87.65860, id: '40770' },
+  { name: 'Wilson',     lat: 41.96480, lon: -87.65780, id: '40540' },
+  { name: 'Sheridan',   lat: 41.95410, lon: -87.65490, id: '40080' },
+  { name: 'Addison',    lat: 41.94740, lon: -87.65350, id: '41440' },
+  { name: 'Belmont',    lat: 41.93970, lon: -87.65270, id: '41320' },
+]
+
+// Rogers Park stations subset
+const ROGERS_PARK_STATIONS = ['Howard', 'Jarvis', 'Morse', 'Loyola']
+
 // Base Red Line travel time Howard ↔ Loop (minutes)
 const BASE_LOOP_HOWARD = 48
 
@@ -139,6 +168,124 @@ function getAQILevel(aqi: number) {
   return AQI_LEVELS.find(l => aqi <= l.max) ?? AQI_LEVELS[AQI_LEVELS.length - 1]
 }
 
+// ─── CTA Map ─────────────────────────────────────────────────────────────────
+
+function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) {
+  // SVG viewport: map lat 41.93 - 42.02, lon -87.68 - -87.64
+  const MIN_LAT = 41.930
+  const MAX_LAT = 42.025
+  const MIN_LON = -87.690
+  const MAX_LON = -87.635
+  const W = 280
+  const H = 220
+
+  function project(lat: number, lon: number): [number, number] {
+    const x = ((lon - MIN_LON) / (MAX_LON - MIN_LON)) * W
+    const y = H - ((lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * H
+    return [x, y]
+  }
+
+  const lineColor: Record<string, string> = {
+    red: '#c60c30',
+    p: '#522398',
+    purple: '#522398',
+    y: '#f9e300',
+    yellow: '#f9e300',
+  }
+
+  const trackColor = isDark ? '#334155' : '#cbd5e1'
+  const stationColor = isDark ? '#475569' : '#94a3b8'
+  const labelColor = isDark ? '#94a3b8' : '#64748b'
+  const rpColor = isDark ? '#e2e8f0' : '#1e293b'
+
+  // Build track path through stations
+  const trackPoints = RED_LINE_STATIONS.map(s => project(s.lat, s.lon))
+  const trackPath = trackPoints
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`)
+    .join(' ')
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="dashboard__cta-map"
+      aria-label="Red Line train positions"
+    >
+      {/* Track */}
+      <path d={trackPath} stroke={trackColor} strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+
+      {/* Stations */}
+      {RED_LINE_STATIONS.map(station => {
+        const [x, y] = project(station.lat, station.lon)
+        const isRP = ROGERS_PARK_STATIONS.includes(station.name)
+        return (
+          <g key={station.name}>
+            <circle
+              cx={x} cy={y} r={isRP ? 5 : 3}
+              fill={isRP ? '#c60c30' : stationColor}
+              stroke={isDark ? '#0f172a' : '#fff'}
+              strokeWidth="1.5"
+            />
+            {isRP && (
+              <text
+                x={x + 7} y={y + 4}
+                fontSize="9"
+                fill={rpColor}
+                fontWeight="600"
+                fontFamily="sans-serif"
+              >
+                {station.name}
+              </text>
+            )}
+            {!isRP && (
+              <text
+                x={x + 5} y={y + 3}
+                fontSize="7.5"
+                fill={labelColor}
+                fontFamily="sans-serif"
+              >
+                {station.name}
+              </text>
+            )}
+          </g>
+        )
+      })}
+
+      {/* Live trains */}
+      {trains.map((train, i) => {
+        const [x, y] = project(train.lat, train.lon)
+        const color = lineColor[train.line] ?? '#c60c30'
+        return (
+          <g key={i}>
+            <circle
+              cx={x} cy={y} r={7}
+              fill={color}
+              stroke={isDark ? '#0f172a' : '#fff'}
+              strokeWidth="2"
+              opacity="0.95"
+            />
+            <text
+              x={x} y={y + 4}
+              fontSize="8"
+              fill="#fff"
+              textAnchor="middle"
+              fontWeight="800"
+              fontFamily="sans-serif"
+            >
+              {train.line === 'red' ? 'R' : train.line === 'p' || train.line === 'purple' ? 'P' : 'Y'}
+            </text>
+          </g>
+        )
+      })}
+
+      {trains.length === 0 && (
+        <text x={W/2} y={H/2} textAnchor="middle" fontSize="10" fill={labelColor} fontFamily="sans-serif">
+          No live trains tracked
+        </text>
+      )}
+    </svg>
+  )
+}
+
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
 export function Dashboard() {
@@ -148,6 +295,7 @@ export function Dashboard() {
   const [sports, setSports] = useState<SportsTeam[]>([])
   const [github, setGithub] = useState<GitHubData | null>(null)
   const [cta, setCta] = useState<CTAStation[]>([])
+  const [mapTrains, setMapTrains] = useState<CTAMapTrain[]>([])
   const [insight, setInsight] = useState<AIInsight>({ text: '', loading: false })
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
@@ -298,12 +446,30 @@ export function Dashboard() {
           }
         })
         const hasDelays = trains.some(t => t.delayed)
-        return { name: station.name, trains, hasDelays }
+        const mapTrains: CTAMapTrain[] = etas
+          .filter((e: any) => e.lat && e.lon && e.lat !== '0' && e.lon !== '0')
+          .map((e: any) => ({
+            lat: parseFloat(e.lat),
+            lon: parseFloat(e.lon),
+            line: e.rt.toLowerCase(),
+            destination: e.destNm,
+            heading: e.heading,
+          }))
+        return { name: station.name, trains, hasDelays, mapTrains }
       })
     )
-    setCta(results
-      .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false })
+    const stations = results
+      .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false, mapTrains: [] })
+    setCta(stations)
+    // Collect all unique map trains across stations
+    const allMapTrains = Array.from(
+      new Map(
+        stations
+          .flatMap(s => s.mapTrains)
+          .map(t => [`${t.lat}-${t.lon}`, t])
+      ).values()
     )
+    setMapTrains(allMapTrains)
   }
 
   const fetchInsight = useCallback(async (
@@ -571,19 +737,18 @@ export function Dashboard() {
           <div className="dashboard__card-header">
             <span className="dashboard__card-icon">🚉</span>
             <h2 className="dashboard__card-title">Red Line</h2>
-            <span className="dashboard__card-sub">Rogers Park</span>
+            <span className="dashboard__card-sub">{mapTrains.length > 0 ? `${mapTrains.length} trains live` : 'Rogers Park'}</span>
           </div>
           {cta.length > 0 ? (
             <>
+              <CTAMap trains={mapTrains} isDark={isDark} />
               <div className="dashboard__cta-stations">
-                {cta.filter(s => s.trains.length > 0).length === 0 ? (
-                  <div className="dashboard__cta-none">No trains currently tracked — service may be limited</div>
-                ) : (
-                  cta.filter(s => s.trains.length > 0).map((station, i) => (
-                    <div key={i} className="dashboard__cta-station">
-                      <div className="dashboard__cta-station-name">{station.name}</div>
+                {cta.map((station, i) => (
+                  <div key={i} className="dashboard__cta-station">
+                    <div className="dashboard__cta-station-name">{station.name}</div>
+                    {station.trains.length > 0 ? (
                       <div className="dashboard__cta-trains">
-                        {station.trains.map((train, j) => (
+                        {station.trains.slice(0, 2).map((train, j) => (
                           <div key={j} className="dashboard__cta-train">
                             <span className={`dashboard__cta-line dashboard__cta-line--${train.line}`}>
                               {train.line}
@@ -597,9 +762,17 @@ export function Dashboard() {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  ))
-                )}
+                    ) : (
+                      <div className="dashboard__cta-trains">
+                        <div className="dashboard__cta-train dashboard__cta-train--sched">
+                          <span className="dashboard__cta-line dashboard__cta-line--red">Red</span>
+                          <span className="dashboard__cta-dest">Scheduled</span>
+                          <span className="dashboard__cta-time">~</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
               {(() => {
                 const conditions = getCTATravelConditions(cta)

@@ -3079,3 +3079,22 @@ kbd {
 .dark .dashboard__cta-condition-label {
   color: #64748b;
 }
+
+/* CTA Map */
+.dashboard__cta-map {
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  background: var(--surface-alt, #f8fafc);
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+[data-theme="dark"] .dashboard__cta-map,
+.dark .dashboard__cta-map {
+  background: #0a0f1e;
+}
+
+.dashboard__cta-train--sched {
+  opacity: 0.5;
+}
