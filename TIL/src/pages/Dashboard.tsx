@@ -171,87 +171,99 @@ function getAQILevel(aqi: number) {
 // ─── CTA Map ─────────────────────────────────────────────────────────────────
 
 function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) {
-  // Tight viewport around Rogers Park corridor only
-  const MIN_LAT = 41.930
-  const MAX_LAT = 42.025
-  const MIN_LON = -87.680
-  const MAX_LON = -87.645
-  const W = 260
+  const W = 120
   const H = 200
+  const TRACK_X = 40  // x position of the track line
+  const PAD = 20      // padding top/bottom
 
-  function project(lat: number, lon: number): [number, number] {
-    const x = ((lon - MIN_LON) / (MAX_LON - MIN_LON)) * W
-    const y = H - ((lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * H
-    return [Math.max(0, Math.min(W, x)), Math.max(0, Math.min(H, y))]
+  // Rogers Park stations only, north to south
+  const STOPS = [
+    { name: 'Howard', lat: 42.01900 },
+    { name: 'Jarvis', lat: 41.99751 },
+    { name: 'Morse',  lat: 41.98521 },
+    { name: 'Loyola', lat: 41.96980 },
+  ]
+
+  const MAX_LAT = STOPS[0].lat
+  const MIN_LAT = STOPS[STOPS.length - 1].lat
+
+  function latToY(lat: number): number {
+    return PAD + ((MAX_LAT - lat) / (MAX_LAT - MIN_LAT)) * (H - PAD * 2)
   }
+
+  const trackColor = isDark ? '#c60c30' : '#c60c30'
+  const bgColor = isDark ? '#0a0f1e' : '#f8fafc'
+  const labelColor = isDark ? '#e2e8f0' : '#1e293b'
+  const stationBg = isDark ? '#0a0f1e' : '#fff'
 
   const lineColor: Record<string, string> = {
     red: '#c60c30',
     p: '#522398',
     purple: '#522398',
     y: '#f9e300',
-    yellow: '#f9e300',
   }
 
-  const trackColor = isDark ? '#334155' : '#cbd5e1'
-  const stationColor = isDark ? '#475569' : '#94a3b8'
-  const labelColor = isDark ? '#94a3b8' : '#64748b'
-  const rpColor = isDark ? '#f1f5f9' : '#1e293b'
-
-  const trackPoints = RED_LINE_STATIONS.map(s => project(s.lat, s.lon))
-  const trackPath = trackPoints
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`)
-    .join(' ')
+  // Filter trains to only those between Howard and ~1 mile south of Loyola
+  const visibleTrains = trains.filter(t =>
+    t.lat >= MIN_LAT - 0.01 && t.lat <= MAX_LAT + 0.01
+  )
 
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
       className="dashboard__cta-map"
-      xmlns="http://www.w3.org/2000/svg" aria-label="Red Line train positions"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Red Line Rogers Park trains"
     >
-      {/* Track line */}
-      <path d={trackPath} stroke={trackColor} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <path d={trackPath} stroke="#c60c30" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
+      {/* Background */}
+      <rect width={W} height={H} fill={bgColor} rx="6" />
 
-      {/* Stations - RP highlighted, others small */}
-      {RED_LINE_STATIONS.map(station => {
-        const [x, y] = project(station.lat, station.lon)
-        const isRP = ROGERS_PARK_STATIONS.includes(station.name)
-        if (!isRP) return <circle key={station.name} cx={x} cy={y} r={2} fill={stationColor} opacity="0.5" />
+      {/* Track line */}
+      <line
+        x1={TRACK_X} y1={PAD}
+        x2={TRACK_X} y2={H - PAD}
+        stroke={trackColor}
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+
+      {/* Station stops */}
+      {STOPS.map(stop => {
+        const y = latToY(stop.lat)
         return (
-          <g key={station.name}>
-            <circle cx={x} cy={y} r={6} fill="#c60c30" stroke={isDark ? '#0f172a' : '#fff'} strokeWidth="2" />
-            <text x={x + 9} y={y + 4} fontSize="10" fill={rpColor} fontWeight="700" fontFamily="sans-serif">
-              {station.name}
+          <g key={stop.name}>
+            <circle cx={TRACK_X} cy={y} r={5} fill={trackColor} stroke={stationBg} strokeWidth="2" />
+            <text x={TRACK_X + 12} y={y + 4} fontSize="11" fill={labelColor} fontWeight="600" fontFamily="sans-serif">
+              {stop.name}
             </text>
           </g>
         )
       })}
+
       {/* Live train dots */}
-      {trains.map((train, i) => {
-        const [x, y] = project(train.lat, train.lon)
-        // Skip if outside viewport
-        if (train.lat < MIN_LAT || train.lat > MAX_LAT || train.lon < MIN_LON || train.lon > MAX_LON) return null
+      {visibleTrains.map((train, i) => {
+        const y = latToY(train.lat)
         const color = lineColor[train.line] ?? '#c60c30'
         const label = train.line === 'red' ? 'R' : train.line === 'p' || train.line === 'purple' ? 'P' : 'Y'
         return (
           <g key={i}>
-            <circle cx={x} cy={y} r={9} fill={color} stroke={isDark ? '#0f172a' : '#fff'} strokeWidth="2" opacity="0.95" />
-            <text x={x} y={y + 4} fontSize="9" fill="#fff" textAnchor="middle" fontWeight="800" fontFamily="sans-serif">
+            <circle cx={TRACK_X} cy={y} r={10} fill={color} stroke={stationBg} strokeWidth="2" opacity="0.95" />
+            <text x={TRACK_X} y={y + 4} fontSize="9" fill="#fff" textAnchor="middle" fontWeight="800" fontFamily="sans-serif">
               {label}
             </text>
           </g>
         )
       })}
 
-      {trains.length === 0 && (
-        <text x={W / 2} y={H - 10} textAnchor="middle" fontSize="9" fill={labelColor} fontFamily="sans-serif">
-          No live positions available
+      {visibleTrains.length === 0 && (
+        <text x={TRACK_X + 14} y={H / 2} fontSize="9" fill={labelColor} fontFamily="sans-serif" opacity="0.6">
+          No live data
         </text>
       )}
     </svg>
   )
 }
+
 
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
@@ -713,7 +725,9 @@ export function Dashboard() {
           </div>
           {cta.length > 0 ? (
             <>
+              <div className="dashboard__cta-panel">
               <CTAMap trains={mapTrains} isDark={isDark} />
+              <div className="dashboard__cta-panel-arrivals">
               <div className="dashboard__cta-stations">
                 {cta.map((station, i) => (
                   <div key={i} className="dashboard__cta-station">
@@ -745,6 +759,8 @@ export function Dashboard() {
                     )}
                   </div>
                 ))}
+              </div>
+              </div>
               </div>
               {(() => {
                 const conditions = getCTATravelConditions(cta)

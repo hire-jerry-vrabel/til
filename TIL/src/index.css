@@ -3109,3 +3109,22 @@ kbd {
   display: block;
   overflow: visible;
 }
+
+/* CTA Map - vertical layout */
+.dashboard__cta-map {
+  width: 140px;
+  height: 220px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.dashboard__cta-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.dashboard__cta-panel-arrivals {
+  flex: 1;
+  min-width: 0;
+}
