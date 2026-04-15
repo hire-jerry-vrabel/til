@@ -12,6 +12,7 @@ export function Header() {
         <nav className="header-nav">
           <Link to="/">Posts</Link>
           <Link to="/bash">Bash 🐾</Link>
+          <Link to="/dashboard">Dashboard</Link>
           <a
             href="https://hire-jerry-vrabel.github.io/til/feed.xml"
             target="_blank"

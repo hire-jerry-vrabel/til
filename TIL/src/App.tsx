@@ -3,6 +3,7 @@ import { Header } from "./components/Header"
 import { Home } from "./pages/Home"
 import { Post } from "./pages/Post"
 import { Bash } from "./pages/Bash"
+import { Dashboard } from "./pages/Dashboard"
 import { ThemeProvider } from "./context/ThemeContext"
 import { ScrollToTop } from "./components/ScrollToTop"
 import "./styles/variables.css"
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/post/:slug" element={<Post />} />
             <Route path="/bash" element={<Bash />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </BrowserRouter>

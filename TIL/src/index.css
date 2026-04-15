@@ -2512,3 +2512,407 @@ kbd {
   background: #0a0f1e;
   border-color: #1e293b;
 }
+
+/* =========================================================
+   Dashboard
+   ========================================================= */
+
+.dashboard {
+  max-width: clamp(768px, 90vw, 1200px);
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.dashboard__hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.dashboard__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+  color: var(--text, #1e293b);
+}
+
+.dashboard__subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #64748b);
+  margin: 0;
+}
+
+.dashboard__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.dashboard__refresh {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 6px;
+  background: var(--surface, #fff);
+  color: var(--text-secondary, #64748b);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dashboard__refresh:hover:not(:disabled) {
+  background: var(--surface-alt, #f1f5f9);
+}
+
+.dashboard__refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dashboard__updated {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+/* AI Insight */
+.dashboard__insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface-alt, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-left: 3px solid #6366f1;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard__insight-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.dashboard__insight-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text, #1e293b);
+  line-height: 1.6;
+}
+
+.dashboard__insight-loading {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #94a3b8);
+  font-style: italic;
+}
+
+/* Grid */
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+/* Cards */
+.dashboard__card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.dashboard__card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard__card-icon { font-size: 1.1rem; }
+
+.dashboard__card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+  margin: 0;
+  flex: 1;
+}
+
+.dashboard__card-sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+/* Skeleton */
+.dashboard__skeleton {
+  height: 120px;
+  background: linear-gradient(90deg, var(--border, #e2e8f0) 25%, var(--surface-alt, #f8fafc) 50%, var(--border, #e2e8f0) 75%);
+  background-size: 200% 100%;
+  animation: dashboard-shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes dashboard-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Weather */
+.dashboard__weather-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard__weather-temp {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text, #1e293b);
+  line-height: 1;
+}
+
+.dashboard__weather-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #64748b);
+}
+
+/* Air Quality */
+.dashboard__aqi-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard__aqi-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.dashboard__aqi-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dashboard__aqi-details {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard__aqi-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary, #64748b);
+}
+
+.dashboard__aqi-stat strong {
+  font-size: 0.95rem;
+  color: var(--text, #1e293b);
+}
+
+.dashboard__aqi-bar {
+  height: 6px;
+  background: var(--border, #e2e8f0);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dashboard__aqi-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* GitHub */
+.dashboard__github-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard__github-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dashboard__github-stat strong {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text, #1e293b);
+  line-height: 1;
+}
+
+.dashboard__github-stat span {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.dashboard__github-latest {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #64748b);
+  margin-bottom: 0.5rem;
+}
+
+.dashboard__github-latest strong {
+  color: #3178c6;
+}
+
+/* Sports */
+.dashboard__sports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dashboard__sport-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border, #f1f5f9);
+}
+
+.dashboard__sport-row:last-child { border-bottom: none; }
+
+.dashboard__sport-team {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard__sport-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.dashboard__sport-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text, #1e293b);
+}
+
+.dashboard__sport-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
+.dashboard__sport-score {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+}
+
+.dashboard__sport-score--win { color: #16a34a; }
+.dashboard__sport-score--loss { color: #dc2626; }
+
+.dashboard__sport-status {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+/* CTA */
+.dashboard__cta-stations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dashboard__cta-station-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+
+.dashboard__cta-trains {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dashboard__cta-train {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.dashboard__cta-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.dashboard__cta-line--red { background: #c60c30; }
+.dashboard__cta-line--blue { background: #00a1de; }
+.dashboard__cta-line--brn { background: #62361b; }
+.dashboard__cta-line--g { background: #009b3a; }
+.dashboard__cta-line--org { background: #f9461c; }
+.dashboard__cta-line--p { background: #522398; }
+.dashboard__cta-line--pink { background: #e27ea6; }
+.dashboard__cta-line--y { background: #f9e300; color: #000; }
+
+.dashboard__cta-dest {
+  flex: 1;
+  color: var(--text, #1e293b);
+}
+
+.dashboard__cta-time {
+  font-weight: 700;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.dashboard__cta-time--delayed { color: #dc2626; }
+.dashboard__cta-none { font-size: 0.78rem; color: var(--text-secondary, #94a3b8); }
+
+/* Dark mode */
+[data-theme="dark"] .dashboard__card,
+.dark .dashboard__card {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .dashboard__insight,
+.dark .dashboard__insight {
+  background: #0a0f1e;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .dashboard__insight-text,
+.dark .dashboard__insight-text { color: #cbd5e1; }
+
+[data-theme="dark"] .dashboard__refresh,
+.dark .dashboard__refresh {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .dashboard__sport-row,
+.dark .dashboard__sport-row { border-color: #1e293b; }
+
+[data-theme="dark"] .dashboard__aqi-bar,
+.dark .dashboard__aqi-bar { background: #1e293b; }
