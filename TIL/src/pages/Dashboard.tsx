@@ -113,25 +113,25 @@ const CTA_STATIONS = [
   { id: '41300', name: 'Loyola', direction: 'Loop' },
 ]
 
-// Red Line station coordinates (north to south)
+// Red Line station coordinates (north to south) - Rogers Park corridor
 const RED_LINE_STATIONS = [
-  { name: 'Howard',     lat: 42.01900, lon: -87.67280, id: '40900' },
-  { name: 'Jarvis',     lat: 41.99640, lon: -87.66990, id: '41190' },
-  { name: 'Morse',      lat: 41.98360, lon: -87.66560, id: '40100' },
-  { name: 'Loyola',     lat: 41.96880, lon: -87.65910, id: '41300' },
-  { name: 'Granville',  lat: 41.99450, lon: -87.65800, id: '41420' },
-  { name: 'Thorndale',  lat: 41.99000, lon: -87.65900, id: '40880' },
-  { name: 'Bryn Mawr',  lat: 41.98350, lon: -87.66000, id: '41380' },
-  { name: 'Berwyn',     lat: 41.97740, lon: -87.65840, id: '40340' },
-  { name: 'Argyle',     lat: 41.97360, lon: -87.65880, id: '41200' },
-  { name: 'Lawrence',   lat: 41.96900, lon: -87.65860, id: '40770' },
-  { name: 'Wilson',     lat: 41.96480, lon: -87.65780, id: '40540' },
-  { name: 'Sheridan',   lat: 41.95410, lon: -87.65490, id: '40080' },
-  { name: 'Addison',    lat: 41.94740, lon: -87.65350, id: '41440' },
-  { name: 'Belmont',    lat: 41.93970, lon: -87.65270, id: '41320' },
+  { name: 'Howard',    lat: 42.01900, lon: -87.67280, id: '40900' },
+  { name: 'Jarvis',    lat: 41.99751, lon: -87.66989, id: '41190' },
+  { name: 'Morse',     lat: 41.98521, lon: -87.66525, id: '40100' },
+  { name: 'Loyola',    lat: 41.96980, lon: -87.65858, id: '41300' },
+  { name: 'Granville', lat: 41.99454, lon: -87.65806, id: '41420' },
+  { name: 'Thorndale', lat: 41.98994, lon: -87.65915, id: '40880' },
+  { name: 'Bryn Mawr', lat: 41.98359, lon: -87.65976, id: '41380' },
+  { name: 'Berwyn',    lat: 41.97766, lon: -87.65858, id: '40340' },
+  { name: 'Argyle',    lat: 41.97338, lon: -87.65879, id: '41200' },
+  { name: 'Lawrence',  lat: 41.96907, lon: -87.65862, id: '40770' },
+  { name: 'Wilson',    lat: 41.96465, lon: -87.65778, id: '40540' },
+  { name: 'Sheridan',  lat: 41.95414, lon: -87.65494, id: '40080' },
+  { name: 'Addison',   lat: 41.94738, lon: -87.65345, id: '41440' },
+  { name: 'Belmont',   lat: 41.93974, lon: -87.65258, id: '41320' },
 ]
 
-// Rogers Park stations subset
+// Rogers Park stations - highlighted on map
 const ROGERS_PARK_STATIONS = ['Howard', 'Jarvis', 'Morse', 'Loyola']
 
 // Base Red Line travel time Howard ↔ Loop (minutes)
@@ -171,18 +171,18 @@ function getAQILevel(aqi: number) {
 // ─── CTA Map ─────────────────────────────────────────────────────────────────
 
 function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) {
-  // SVG viewport: map lat 41.93 - 42.02, lon -87.68 - -87.64
+  // Tight viewport around Rogers Park corridor only
   const MIN_LAT = 41.930
   const MAX_LAT = 42.025
-  const MIN_LON = -87.690
-  const MAX_LON = -87.635
-  const W = 280
-  const H = 220
+  const MIN_LON = -87.680
+  const MAX_LON = -87.645
+  const W = 260
+  const H = 200
 
   function project(lat: number, lon: number): [number, number] {
     const x = ((lon - MIN_LON) / (MAX_LON - MIN_LON)) * W
     const y = H - ((lat - MIN_LAT) / (MAX_LAT - MIN_LAT)) * H
-    return [x, y]
+    return [Math.max(0, Math.min(W, x)), Math.max(0, Math.min(H, y))]
   }
 
   const lineColor: Record<string, string> = {
@@ -196,9 +196,8 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
   const trackColor = isDark ? '#334155' : '#cbd5e1'
   const stationColor = isDark ? '#475569' : '#94a3b8'
   const labelColor = isDark ? '#94a3b8' : '#64748b'
-  const rpColor = isDark ? '#e2e8f0' : '#1e293b'
+  const rpColor = isDark ? '#f1f5f9' : '#1e293b'
 
-  // Build track path through stations
   const trackPoints = RED_LINE_STATIONS.map(s => project(s.lat, s.lon))
   const trackPath = trackPoints
     .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`)
@@ -210,38 +209,43 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
       className="dashboard__cta-map"
       aria-label="Red Line train positions"
     >
-      {/* Track */}
-      <path d={trackPath} stroke={trackColor} strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Track line */}
+      <path d={trackPath} stroke={trackColor} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={trackPath} stroke="#c60c30" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
 
-      {/* Stations */}
+      {/* All stations - small dots */}
       {RED_LINE_STATIONS.map(station => {
         const [x, y] = project(station.lat, station.lon)
         const isRP = ROGERS_PARK_STATIONS.includes(station.name)
         return (
           <g key={station.name}>
             <circle
-              cx={x} cy={y} r={isRP ? 5 : 3}
+              cx={x} cy={y}
+              r={isRP ? 6 : 3}
               fill={isRP ? '#c60c30' : stationColor}
               stroke={isDark ? '#0f172a' : '#fff'}
               strokeWidth="1.5"
             />
+            {/* Only label Rogers Park stations */}
             {isRP && (
               <text
-                x={x + 7} y={y + 4}
-                fontSize="9"
+                x={x + 9} y={y + 4}
+                fontSize="10"
                 fill={rpColor}
-                fontWeight="600"
+                fontWeight="700"
                 fontFamily="sans-serif"
               >
                 {station.name}
               </text>
             )}
+            {/* Tiny label for other stations on hover area */}
             {!isRP && (
               <text
                 x={x + 5} y={y + 3}
-                fontSize="7.5"
+                fontSize="7"
                 fill={labelColor}
                 fontFamily="sans-serif"
+                opacity="0.7"
               >
                 {station.name}
               </text>
@@ -250,36 +254,26 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
         )
       })}
 
-      {/* Live trains */}
+      {/* Live train dots */}
       {trains.map((train, i) => {
         const [x, y] = project(train.lat, train.lon)
+        // Skip if outside viewport
+        if (train.lat < MIN_LAT || train.lat > MAX_LAT || train.lon < MIN_LON || train.lon > MAX_LON) return null
         const color = lineColor[train.line] ?? '#c60c30'
+        const label = train.line === 'red' ? 'R' : train.line === 'p' || train.line === 'purple' ? 'P' : 'Y'
         return (
           <g key={i}>
-            <circle
-              cx={x} cy={y} r={7}
-              fill={color}
-              stroke={isDark ? '#0f172a' : '#fff'}
-              strokeWidth="2"
-              opacity="0.95"
-            />
-            <text
-              x={x} y={y + 4}
-              fontSize="8"
-              fill="#fff"
-              textAnchor="middle"
-              fontWeight="800"
-              fontFamily="sans-serif"
-            >
-              {train.line === 'red' ? 'R' : train.line === 'p' || train.line === 'purple' ? 'P' : 'Y'}
+            <circle cx={x} cy={y} r={9} fill={color} stroke={isDark ? '#0f172a' : '#fff'} strokeWidth="2" opacity="0.95" />
+            <text x={x} y={y + 4} fontSize="9" fill="#fff" textAnchor="middle" fontWeight="800" fontFamily="sans-serif">
+              {label}
             </text>
           </g>
         )
       })}
 
       {trains.length === 0 && (
-        <text x={W/2} y={H/2} textAnchor="middle" fontSize="10" fill={labelColor} fontFamily="sans-serif">
-          No live trains tracked
+        <text x={W / 2} y={H - 10} textAnchor="middle" fontSize="9" fill={labelColor} fontFamily="sans-serif">
+          No live positions available
         </text>
       )}
     </svg>
