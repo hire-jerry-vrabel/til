@@ -328,7 +328,7 @@ export function Dashboard() {
           opponent: opponent?.team.displayName,
           opponentLogo: opponent?.team.logo,
           opponentScore: opponent?.score,
-          status: comp.status.type.shortDetail,
+          status: comp.status.type.shortDetail?.replace('EDT', 'CDT').replace('EST', 'CST') ?? '',
           detail: isChicago ? 'vs' : '@',
           win: comp.status.type.completed
             ? parseInt(chicago?.score ?? '0') > parseInt(opponent?.score ?? '0')
