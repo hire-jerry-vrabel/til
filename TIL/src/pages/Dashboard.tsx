@@ -207,7 +207,7 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
     <svg
       viewBox={`0 0 ${W} ${H}`}
       className="dashboard__cta-map"
-      aria-label="Red Line train positions"
+      xmlns="http://www.w3.org/2000/svg" aria-label="Red Line train positions"
     >
       {/* Track line */}
       <path d={trackPath} stroke={trackColor} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -238,18 +238,7 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
                 {station.name}
               </text>
             )}
-            {/* Tiny label for other stations on hover area */}
-            {!isRP && (
-              <text
-                x={x + 5} y={y + 3}
-                fontSize="7"
-                fill={labelColor}
-                fontFamily="sans-serif"
-                opacity="0.7"
-              >
-                {station.name}
-              </text>
-            )}
+
           </g>
         )
       })}
@@ -441,7 +430,7 @@ export function Dashboard() {
         })
         const hasDelays = trains.some(t => t.delayed)
         const mapTrains: CTAMapTrain[] = etas
-          .filter((e: any) => e.lat && e.lon && e.lat !== '0' && e.lon !== '0')
+          .filter((e: any) => e.lat && e.lon && e.lat !== '0' && e.lon !== '0' && parseFloat(e.lat) !== 0 && parseFloat(e.lon) !== 0)
           .map((e: any) => ({
             lat: parseFloat(e.lat),
             lon: parseFloat(e.lon),

@@ -3098,3 +3098,14 @@ kbd {
 .dashboard__cta-train--sched {
   opacity: 0.5;
 }
+
+/* CTA Map sizing fix */
+.dashboard__cta-map {
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  background: var(--surface-alt, #f8fafc);
+  margin-bottom: 0.75rem;
+  display: block;
+  overflow: visible;
+}
