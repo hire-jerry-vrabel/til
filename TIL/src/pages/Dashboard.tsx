@@ -113,27 +113,6 @@ const CTA_STATIONS = [
   { id: '41300', name: 'Loyola', direction: 'Loop' },
 ]
 
-// Red Line station coordinates (north to south) - Rogers Park corridor
-const RED_LINE_STATIONS = [
-  { name: 'Howard',    lat: 42.01900, lon: -87.67280, id: '40900' },
-  { name: 'Jarvis',    lat: 41.99751, lon: -87.66989, id: '41190' },
-  { name: 'Morse',     lat: 41.98521, lon: -87.66525, id: '40100' },
-  { name: 'Loyola',    lat: 41.96980, lon: -87.65858, id: '41300' },
-  { name: 'Granville', lat: 41.99454, lon: -87.65806, id: '41420' },
-  { name: 'Thorndale', lat: 41.98994, lon: -87.65915, id: '40880' },
-  { name: 'Bryn Mawr', lat: 41.98359, lon: -87.65976, id: '41380' },
-  { name: 'Berwyn',    lat: 41.97766, lon: -87.65858, id: '40340' },
-  { name: 'Argyle',    lat: 41.97338, lon: -87.65879, id: '41200' },
-  { name: 'Lawrence',  lat: 41.96907, lon: -87.65862, id: '40770' },
-  { name: 'Wilson',    lat: 41.96465, lon: -87.65778, id: '40540' },
-  { name: 'Sheridan',  lat: 41.95414, lon: -87.65494, id: '40080' },
-  { name: 'Addison',   lat: 41.94738, lon: -87.65345, id: '41440' },
-  { name: 'Belmont',   lat: 41.93974, lon: -87.65258, id: '41320' },
-]
-
-// Rogers Park stations - highlighted on map
-const ROGERS_PARK_STATIONS = ['Howard', 'Jarvis', 'Morse', 'Loyola']
-
 // Base Red Line travel time Howard ↔ Loop (minutes)
 const BASE_LOOP_HOWARD = 48
 
