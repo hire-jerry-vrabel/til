@@ -367,9 +367,11 @@ export function Dashboard() {
     const sorted = mapped.sort((a, b) => {
       const priority = (t: SportsTeam) => {
         if (t.status === 'No game scheduled' || t.status === 'Unavailable') return 3
-        if (t.score !== undefined && t.win === undefined) return 0
-        if (t.score !== undefined) return 2
-        return 1
+        // Live games have in-progress indicators like "Top 4th", "3rd Quarter", etc.
+        const isLive = t.score !== undefined && !t.status.includes('/') && !t.status.includes('PM') && !t.status.includes('AM') && t.win === undefined
+        if (isLive) return 0
+        if (t.score !== undefined && t.win !== undefined) return 2 // completed
+        return 1 // upcoming
       }
       const pa = priority(a)
       const pb = priority(b)
