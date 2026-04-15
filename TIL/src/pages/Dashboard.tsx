@@ -213,36 +213,20 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
       <path d={trackPath} stroke={trackColor} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       <path d={trackPath} stroke="#c60c30" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.4" />
 
-      {/* All stations - small dots */}
+      {/* Stations - RP highlighted, others small */}
       {RED_LINE_STATIONS.map(station => {
         const [x, y] = project(station.lat, station.lon)
         const isRP = ROGERS_PARK_STATIONS.includes(station.name)
+        if (!isRP) return <circle key={station.name} cx={x} cy={y} r={2} fill={stationColor} opacity="0.5" />
         return (
           <g key={station.name}>
-            <circle
-              cx={x} cy={y}
-              r={isRP ? 6 : 3}
-              fill={isRP ? '#c60c30' : stationColor}
-              stroke={isDark ? '#0f172a' : '#fff'}
-              strokeWidth="1.5"
-            />
-            {/* Only label Rogers Park stations */}
-            {isRP && (
-              <text
-                x={x + 9} y={y + 4}
-                fontSize="10"
-                fill={rpColor}
-                fontWeight="700"
-                fontFamily="sans-serif"
-              >
-                {station.name}
-              </text>
-            )}
-
+            <circle cx={x} cy={y} r={6} fill="#c60c30" stroke={isDark ? '#0f172a' : '#fff'} strokeWidth="2" />
+            <text x={x + 9} y={y + 4} fontSize="10" fill={rpColor} fontWeight="700" fontFamily="sans-serif">
+              {station.name}
+            </text>
           </g>
         )
       })}
-
       {/* Live train dots */}
       {trains.map((train, i) => {
         const [x, y] = project(train.lat, train.lon)
@@ -429,8 +413,13 @@ export function Dashboard() {
           }
         })
         const hasDelays = trains.some(t => t.delayed)
+        // Use ALL etas for map positions, not just sliced ones
         const mapTrains: CTAMapTrain[] = etas
-          .filter((e: any) => e.lat && e.lon && e.lat !== '0' && e.lon !== '0' && parseFloat(e.lat) !== 0 && parseFloat(e.lon) !== 0)
+          .filter((e: any) => {
+            const lat = parseFloat(e.lat)
+            const lon = parseFloat(e.lon)
+            return e.lat && e.lon && !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0
+          })
           .map((e: any) => ({
             lat: parseFloat(e.lat),
             lon: parseFloat(e.lon),
