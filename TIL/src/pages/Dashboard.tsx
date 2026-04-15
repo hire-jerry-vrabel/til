@@ -89,10 +89,13 @@ const AQI_LEVELS = [
 ]
 
 const CHICAGO_TEAMS = [
-  { sport: 'baseball', league: 'mlb', name: 'Chicago Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
-  { sport: 'football', league: 'nfl', name: 'Chicago Bears', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
-  { sport: 'basketball', league: 'nba', name: 'Chicago Bulls', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
-  { sport: 'hockey', league: 'nhl', name: 'Chicago Blackhawks', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/chic.png' },
+  { sport: 'baseball', league: 'mlb', name: 'Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
+  { sport: 'football', league: 'nfl', name: 'Bears', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
+  { sport: 'basketball', league: 'nba', name: 'Bulls', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
+  { sport: 'hockey', league: 'nhl', name: 'Blackhawks', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/chic.png' },
+  { sport: 'soccer', league: 'usa.1', name: 'Fire FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/chicago-fire.png' },
+  { sport: 'soccer', league: 'usa.nwsl', name: 'Stars FC', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/soccer/500/chicago-red-stars.png' },
+  { sport: 'basketball', league: 'wnba', name: 'Sky', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/wnba/500/chi.png' },
 ]
 
 const CTA_STATIONS = [
@@ -573,10 +576,12 @@ export function Dashboard() {
           {cta.length > 0 ? (
             <>
               <div className="dashboard__cta-stations">
-                {cta.map((station, i) => (
-                  <div key={i} className="dashboard__cta-station">
-                    <div className="dashboard__cta-station-name">{station.name}</div>
-                    {station.trains.length > 0 ? (
+                {cta.filter(s => s.trains.length > 0).length === 0 ? (
+                  <div className="dashboard__cta-none">No trains currently tracked — service may be limited</div>
+                ) : (
+                  cta.filter(s => s.trains.length > 0).map((station, i) => (
+                    <div key={i} className="dashboard__cta-station">
+                      <div className="dashboard__cta-station-name">{station.name}</div>
                       <div className="dashboard__cta-trains">
                         {station.trains.map((train, j) => (
                           <div key={j} className="dashboard__cta-train">
@@ -592,11 +597,9 @@ export function Dashboard() {
                           </div>
                         ))}
                       </div>
-                    ) : (
-                      <span className="dashboard__cta-none">No arrivals</span>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))
+                )}
               </div>
               {(() => {
                 const conditions = getCTATravelConditions(cta)
