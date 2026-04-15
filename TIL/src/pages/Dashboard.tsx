@@ -91,10 +91,17 @@ const CHICAGO_TEAMS = [
 ]
 
 const CTA_STATIONS = [
-  { id: '41300', name: 'Loyola' },
-  { id: '40100', name: 'Morse' },
-  { id: '41190', name: 'Jarvis' },
+  { id: '40900', name: 'Howard', direction: 'Loop' },
+  { id: '41190', name: 'Jarvis', direction: 'Loop' },
+  { id: '40100', name: 'Morse', direction: 'Loop' },
+  { id: '41300', name: 'Loyola', direction: 'Loop' },
 ]
+
+// Average Red Line travel times from Rogers Park to key destinations (minutes)
+const CTA_TRAVEL_TIMES = {
+  toLoop: 40,      // Rogers Park → Loop (~40 min)
+  toHoward: 8,     // Rogers Park → Howard (~8 min)
+}
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
@@ -532,34 +539,47 @@ export function Dashboard() {
           <div className="dashboard__card-header">
             <span className="dashboard__card-icon">🚉</span>
             <h2 className="dashboard__card-title">Red Line</h2>
-            <span className="dashboard__card-sub">Rogers Park Stops</span>
+            <span className="dashboard__card-sub">Rogers Park</span>
           </div>
           {cta.length > 0 ? (
-            <div className="dashboard__cta-stations">
-              {cta.map((station, i) => (
-                <div key={i} className="dashboard__cta-station">
-                  <div className="dashboard__cta-station-name">{station.name}</div>
-                  {station.trains.length > 0 ? (
-                    <div className="dashboard__cta-trains">
-                      {station.trains.map((train, j) => (
-                        <div key={j} className="dashboard__cta-train">
-                          <span className={`dashboard__cta-line dashboard__cta-line--${train.line.toLowerCase()}`}>
-                            {train.line}
-                          </span>
-                          <span className="dashboard__cta-dest">{train.destination}</span>
-                          <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}`}>
-                            {train.minutes === 'Due' ? 'Due' : `${train.minutes}m`}
-                            {train.delayed && ' ⚠'}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="dashboard__cta-none">No arrivals</span>
-                  )}
+            <>
+              <div className="dashboard__cta-travel-times">
+                <div className="dashboard__cta-travel-time">
+                  <span className="dashboard__cta-travel-label">→ Loop</span>
+                  <span className="dashboard__cta-travel-value">~{CTA_TRAVEL_TIMES.toLoop} min</span>
                 </div>
-              ))}
-            </div>
+                <div className="dashboard__cta-travel-divider" />
+                <div className="dashboard__cta-travel-time">
+                  <span className="dashboard__cta-travel-label">→ Howard</span>
+                  <span className="dashboard__cta-travel-value">~{CTA_TRAVEL_TIMES.toHoward} min</span>
+                </div>
+              </div>
+              <div className="dashboard__cta-stations">
+                {cta.map((station, i) => (
+                  <div key={i} className="dashboard__cta-station">
+                    <div className="dashboard__cta-station-name">{station.name}</div>
+                    {station.trains.length > 0 ? (
+                      <div className="dashboard__cta-trains">
+                        {station.trains.map((train, j) => (
+                          <div key={j} className="dashboard__cta-train">
+                            <span className={`dashboard__cta-line dashboard__cta-line--${train.line}`}>
+                              {train.line}
+                            </span>
+                            <span className="dashboard__cta-dest">{train.destination}</span>
+                            <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}`}>
+                              {train.minutes === 'Due' ? 'Due' : `${train.minutes}m`}
+                              {train.delayed && ' ⚠'}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="dashboard__cta-none">No arrivals</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
           ) : (
             <div className="dashboard__skeleton" />
           )}

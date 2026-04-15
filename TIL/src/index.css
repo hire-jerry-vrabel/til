@@ -2996,3 +2996,51 @@ kbd {
 
 [data-theme="dark"] .dashboard__updated,
 .dark .dashboard__updated { color: #475569; }
+
+/* CTA Travel Times */
+.dashboard__cta-travel-times {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface-alt, #f8fafc);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.dashboard__cta-travel-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+}
+
+.dashboard__cta-travel-label {
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard__cta-travel-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c60c30;
+}
+
+.dashboard__cta-travel-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border, #e2e8f0);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .dashboard__cta-travel-times,
+.dark .dashboard__cta-travel-times {
+  background: #0a0f1e;
+}
+
+[data-theme="dark"] .dashboard__cta-travel-divider,
+.dark .dashboard__cta-travel-divider {
+  background: #1e293b;
+}
