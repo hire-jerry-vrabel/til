@@ -2916,3 +2916,83 @@ kbd {
 
 [data-theme="dark"] .dashboard__aqi-bar,
 .dark .dashboard__aqi-bar { background: #1e293b; }
+
+/* Dashboard dark mode improvements */
+[data-theme="dark"] .dashboard__title,
+.dark .dashboard__title { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__weather-temp,
+.dark .dashboard__weather-temp { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__weather-detail,
+.dark .dashboard__weather-detail { color: #94a3b8; }
+
+[data-theme="dark"] .dashboard__aqi-stat strong,
+.dark .dashboard__aqi-stat strong { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__aqi-stat span,
+.dark .dashboard__aqi-stat span { color: #64748b; }
+
+[data-theme="dark"] .dashboard__github-stat strong,
+.dark .dashboard__github-stat strong { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__github-latest,
+.dark .dashboard__github-latest { color: #94a3b8; }
+
+[data-theme="dark"] .dashboard__sport-name,
+.dark .dashboard__sport-name { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__sport-score,
+.dark .dashboard__sport-score { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__cta-dest,
+.dark .dashboard__cta-dest { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__cta-station-name,
+.dark .dashboard__cta-station-name { color: #64748b; }
+
+[data-theme="dark"] .dashboard__card-title,
+.dark .dashboard__card-title { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__updated,
+.dark .dashboard__updated { color: #475569; }
+
+/* Dashboard dark mode improvements */
+[data-theme="dark"] .dashboard__title,
+.dark .dashboard__title { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__weather-temp,
+.dark .dashboard__weather-temp { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__weather-detail,
+.dark .dashboard__weather-detail { color: #94a3b8; }
+
+[data-theme="dark"] .dashboard__aqi-stat strong,
+.dark .dashboard__aqi-stat strong { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__aqi-stat span,
+.dark .dashboard__aqi-stat span { color: #64748b; }
+
+[data-theme="dark"] .dashboard__github-stat strong,
+.dark .dashboard__github-stat strong { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__github-latest,
+.dark .dashboard__github-latest { color: #94a3b8; }
+
+[data-theme="dark"] .dashboard__sport-name,
+.dark .dashboard__sport-name { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__sport-score,
+.dark .dashboard__sport-score { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__cta-dest,
+.dark .dashboard__cta-dest { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__cta-station-name,
+.dark .dashboard__cta-station-name { color: #64748b; }
+
+[data-theme="dark"] .dashboard__card-title,
+.dark .dashboard__card-title { color: #f1f5f9; }
+
+[data-theme="dark"] .dashboard__updated,
+.dark .dashboard__updated { color: #475569; }

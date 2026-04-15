@@ -84,10 +84,10 @@ const AQI_LEVELS = [
 ]
 
 const CHICAGO_TEAMS = [
-  { sport: 'baseball', league: 'mlb', name: 'Chicago Cubs', abbr: 'CHC' },
-  { sport: 'football', league: 'nfl', name: 'Chicago Bears', abbr: 'CHI' },
-  { sport: 'basketball', league: 'nba', name: 'Chicago Bulls', abbr: 'CHI' },
-  { sport: 'hockey', league: 'nhl', name: 'Chicago Blackhawks', abbr: 'CHI' },
+  { sport: 'baseball', league: 'mlb', name: 'Chicago Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
+  { sport: 'football', league: 'nfl', name: 'Chicago Bears', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
+  { sport: 'basketball', league: 'nba', name: 'Chicago Bulls', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
+  { sport: 'hockey', league: 'nhl', name: 'Chicago Blackhawks', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/chic.png' },
 ]
 
 const CTA_STATIONS = [
@@ -162,7 +162,7 @@ export function Dashboard() {
             c.team.abbreviation === team.abbr
           )
         )
-        if (!event) return { name: team.name, logo: '', status: 'No game scheduled', detail: '' }
+        if (!event) return { name: team.name, logo: team.fallbackLogo, status: 'No game scheduled', detail: '' }
         const comp = event.competitions[0]
         const home = comp.competitors.find((c: any) => c.homeAway === 'home')
         const away = comp.competitors.find((c: any) => c.homeAway === 'away')
@@ -253,7 +253,7 @@ export function Dashboard() {
           const now = new Date()
           const mins = Math.round((arrT.getTime() - now.getTime()) / 60000)
           return {
-            line: e.rt,
+            line: e.rt.toLowerCase(),
             destination: e.destNm,
             minutes: mins <= 1 ? 'Due' : mins,
             delayed: e.isDly === '1',
