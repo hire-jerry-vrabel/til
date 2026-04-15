@@ -74,6 +74,48 @@ interface AIInsight {
   loading: boolean
 }
 
+// ─── API Response Types ──────────────────────────────────────────────────────
+
+interface ESPNCompetitor {
+  team: { abbreviation: string; displayName: string; logo: string }
+  homeAway: string
+  score?: string
+}
+
+interface ESPNCompetition {
+  competitors: ESPNCompetitor[]
+  status: { type: { shortDetail?: string; completed: boolean } }
+}
+
+interface ESPNEvent {
+  competitions: ESPNCompetition[]
+}
+
+interface GitHubEvent {
+  type: string
+  created_at: string
+  repo?: { name: string }
+  payload: { commits?: unknown[] }
+}
+
+interface CTAEta {
+  arrT: string
+  rt: string
+  destNm: string
+  isDly: string
+  isApp: string
+  lat: string
+  lon: string
+  heading: string
+}
+
+interface CTAPositionTrain {
+  lat: string
+  lon: string
+  destNm?: string
+  heading?: string
+}
+
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const LAT = 41.9981
@@ -99,6 +141,7 @@ const AQI_LEVELS = [
 
 const CHICAGO_TEAMS = [
   { sport: 'baseball', league: 'mlb', name: 'Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
+  { sport: 'baseball', league: 'mlb', name: 'White Sox', abbr: 'CHW', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chw.png' },
   { sport: 'football', league: 'nfl', name: 'Bears', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nfl/500/chi.png' },
   { sport: 'basketball', league: 'nba', name: 'Bulls', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nba/500/chi.png' },
   { sport: 'hockey', league: 'nhl', name: 'Blackhawks', abbr: 'CHI', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/nhl/500/chic.png' },
@@ -120,7 +163,7 @@ const BASE_LOOP_HOWARD = 48
 function getCTATravelConditions(stations: CTAStation[]): CTATravelConditions {
   const now = new Date()
   const hour = now.getHours()
-  const day = now.getDay() // 0=Sun, 6=Sat
+  const day = now.getDay()
   const isWeekend = day === 0 || day === 6
   const isRush = !isWeekend && ((hour >= 7 && hour < 9) || (hour >= 16 && hour < 19))
   const hasDelays = stations.some(s => s.hasDelays)
@@ -153,10 +196,9 @@ function getAQILevel(aqi: number) {
 function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) {
   const W = 120
   const H = 200
-  const TRACK_X = 40  // x position of the track line
-  const PAD = 20      // padding top/bottom
+  const TRACK_X = 40
+  const PAD = 20
 
-  // Rogers Park stations only, north to south
   const STOPS = [
     { name: 'Howard', lat: 42.01900 },
     { name: 'Jarvis', lat: 41.99751 },
@@ -183,7 +225,6 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
     y: '#f9e300',
   }
 
-  // Filter trains to only those between Howard and ~1 mile south of Loyola
   const visibleTrains = trains.filter(t =>
     t.lat >= MIN_LAT - 0.01 && t.lat <= MAX_LAT + 0.01
   )
@@ -195,10 +236,7 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
       xmlns="http://www.w3.org/2000/svg"
       aria-label="Red Line Rogers Park trains"
     >
-      {/* Background */}
       <rect width={W} height={H} fill={bgColor} rx="6" />
-
-      {/* Track line */}
       <line
         x1={TRACK_X} y1={PAD}
         x2={TRACK_X} y2={H - PAD}
@@ -206,8 +244,6 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
         strokeWidth="3"
         strokeLinecap="round"
       />
-
-      {/* Station stops */}
       {STOPS.map(stop => {
         const y = latToY(stop.lat)
         return (
@@ -219,8 +255,6 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
           </g>
         )
       })}
-
-      {/* Live train dots */}
       {visibleTrains.map((train, i) => {
         const y = latToY(train.lat)
         const color = lineColor[train.line] ?? '#c60c30'
@@ -234,7 +268,6 @@ function CTAMap({ trains, isDark }: { trains: CTAMapTrain[], isDark: boolean }) 
           </g>
         )
       })}
-
       {visibleTrains.length === 0 && (
         <text x={TRACK_X + 14} y={H / 2} fontSize="9" fill={labelColor} fontFamily="sans-serif" opacity="0.6">
           No live data
@@ -300,16 +333,16 @@ export function Dashboard() {
         const res = await fetch(
           `https://site.api.espn.com/apis/site/v2/sports/${team.sport}/${team.league}/scoreboard`
         )
-        const data = await res.json()
-        const event = data.events?.find((e: any) =>
-          e.competitions?.[0]?.competitors?.some((c: any) =>
+        const data = await res.json() as { events?: ESPNEvent[] }
+        const event = data.events?.find((e: ESPNEvent) =>
+          e.competitions?.[0]?.competitors?.some((c: ESPNCompetitor) =>
             c.team.abbreviation === team.abbr
           )
         )
         if (!event) return { name: team.name, logo: team.fallbackLogo, status: 'No game scheduled', detail: '' }
         const comp = event.competitions[0]
-        const home = comp.competitors.find((c: any) => c.homeAway === 'home')
-        const away = comp.competitors.find((c: any) => c.homeAway === 'away')
+        const home = comp.competitors.find((c: ESPNCompetitor) => c.homeAway === 'home')
+        const away = comp.competitors.find((c: ESPNCompetitor) => c.homeAway === 'away')
         const isChicago = home?.team.abbreviation === team.abbr
         const chicago = isChicago ? home : away
         const opponent = isChicago ? away : home
@@ -331,13 +364,12 @@ export function Dashboard() {
     const mapped = results.map((r, i) =>
       r.status === 'fulfilled' ? r.value : { name: CHICAGO_TEAMS[i].name, logo: '', status: 'Unavailable', detail: '' }
     )
-    // Sort: live games first, then upcoming by time, then completed, then no game/unavailable
     const sorted = mapped.sort((a, b) => {
       const priority = (t: SportsTeam) => {
         if (t.status === 'No game scheduled' || t.status === 'Unavailable') return 3
-        if (t.score !== undefined && t.win === undefined) return 0 // live
-        if (t.score !== undefined) return 2 // completed
-        return 1 // upcoming
+        if (t.score !== undefined && t.win === undefined) return 0
+        if (t.score !== undefined) return 2
+        return 1
       }
       const pa = priority(a)
       const pb = priority(b)
@@ -352,10 +384,9 @@ export function Dashboard() {
       fetch('https://api.github.com/users/hire-jerry-vrabel'),
       fetch('https://api.github.com/users/hire-jerry-vrabel/events/public?per_page=100'),
     ])
-    const user = await userRes.json()
-    const events = await eventsRes.json()
+    const user = await userRes.json() as { public_repos: number }
+    const events = await eventsRes.json() as GitHubEvent[]
 
-    // Build last 30 days activity
     const activity: Record<string, number> = {}
     const now = new Date()
     for (let i = 29; i >= 0; i--) {
@@ -364,7 +395,7 @@ export function Dashboard() {
       activity[d.toISOString().split('T')[0]] = 0
     }
     let commits = 0
-    events.forEach((e: any) => {
+    events.forEach((e: GitHubEvent) => {
       if (e.type === 'PushEvent') {
         const date = e.created_at.split('T')[0]
         if (activity[date] !== undefined) {
@@ -374,7 +405,6 @@ export function Dashboard() {
       }
     })
 
-    // Calculate streak
     const days = Object.keys(activity).sort().reverse()
     let streak = 0
     for (const day of days) {
@@ -382,7 +412,7 @@ export function Dashboard() {
       else break
     }
 
-    const latestPush = events.find((e: any) => e.type === 'PushEvent')
+    const latestPush = events.find((e: GitHubEvent) => e.type === 'PushEvent')
     setGithub({
       commits,
       repos: user.public_repos,
@@ -396,15 +426,14 @@ export function Dashboard() {
   }
 
   const fetchCTA = async () => {
-    // Fetch station arrivals via proxy
     const results = await Promise.allSettled(
       CTA_STATIONS.map(async station => {
         const res = await fetch(
           `${PROXY_URL}/cta/arrivals?mapid=${station.id}`
         )
-        const data = await res.json()
+        const data = await res.json() as { ctatt?: { eta?: CTAEta[] } }
         const etas = data.ctatt?.eta ?? []
-        const trains: CTATrain[] = etas.slice(0, 3).map((e: any) => {
+        const trains: CTATrain[] = etas.slice(0, 3).map((e: CTAEta) => {
           const arrT = new Date(e.arrT)
           const now = new Date()
           const mins = Math.round((arrT.getTime() - now.getTime()) / 60000)
@@ -418,12 +447,12 @@ export function Dashboard() {
         })
         const hasDelays = trains.some(t => t.delayed)
         const mapTrains: CTAMapTrain[] = etas
-          .filter((e: any) => {
+          .filter((e: CTAEta) => {
             const lat = parseFloat(e.lat)
             const lon = parseFloat(e.lon)
             return e.lat && e.lon && !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0
           })
-          .map((e: any) => ({
+          .map((e: CTAEta) => ({
             lat: parseFloat(e.lat),
             lon: parseFloat(e.lon),
             line: e.rt.toLowerCase(),
@@ -437,21 +466,20 @@ export function Dashboard() {
       .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false, mapTrains: [] })
     setCta(stations)
 
-    // Fetch live train positions via proxy
     try {
       const posRes = await fetch(
         `${PROXY_URL}/cta/positions?rt=red`
       )
-      const posData = await posRes.json()
+      const posData = await posRes.json() as { ctatt?: { route?: { train?: CTAPositionTrain[] }[] } }
       const routes = posData.ctatt?.route ?? []
       const posTrains: CTAMapTrain[] = routes
-        .flatMap((r: any) => r.train ?? [])
-        .filter((t: any) => {
+        .flatMap((r: { train?: CTAPositionTrain[] }) => r.train ?? [])
+        .filter((t: CTAPositionTrain) => {
           const lat = parseFloat(t.lat)
           const lon = parseFloat(t.lon)
           return !isNaN(lat) && !isNaN(lon) && lat !== 0 && lon !== 0
         })
-        .map((t: any) => ({
+        .map((t: CTAPositionTrain) => ({
           lat: parseFloat(t.lat),
           lon: parseFloat(t.lon),
           line: 'red',
@@ -460,7 +488,6 @@ export function Dashboard() {
         }))
       setMapTrains(posTrains)
     } catch {
-      // Fall back to station-derived positions from arrivals data
       const allMapTrains = Array.from(
         new Map(
           stations
@@ -499,7 +526,7 @@ export function Dashboard() {
           messages: [{ role: 'user', content: context }],
         }),
       })
-      const data = await res.json()
+      const data = await res.json() as { content?: { text: string }[] }
       setInsight({ text: data.content?.[0]?.text ?? '', loading: false })
     } catch {
       setInsight({ text: '', loading: false })
@@ -525,7 +552,6 @@ export function Dashboard() {
     return () => clearInterval(interval)
   }, [fetchAll])
 
-  // Fire AI insight after data loads
   useEffect(() => {
     if (!loading && weather && airQuality && github) {
       fetchInsight(weather, airQuality, sports, github)
@@ -557,7 +583,6 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* AI Insight */}
       {(insight.text || insight.loading) && (
         <div className="dashboard__insight">
           <span className="dashboard__insight-icon">🤖</span>
