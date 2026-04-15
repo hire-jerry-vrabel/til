@@ -3044,3 +3044,38 @@ kbd {
 .dark .dashboard__cta-travel-divider {
   background: #1e293b;
 }
+
+/* CTA Travel Times — dynamic conditions */
+.dashboard__cta-travel-times {
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+}
+
+.dashboard__cta-travel-times--delayed .dashboard__cta-travel-value {
+  color: #dc2626;
+}
+
+.dashboard__cta-travel-times--rush .dashboard__cta-travel-value {
+  color: #d97706;
+}
+
+.dashboard__cta-travel-condition {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.dashboard__cta-condition-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary, #64748b);
+}
+
+.dashboard__cta-time--approaching {
+  color: #16a34a;
+}
+
+[data-theme="dark"] .dashboard__cta-condition-label,
+.dark .dashboard__cta-condition-label {
+  color: #64748b;
+}

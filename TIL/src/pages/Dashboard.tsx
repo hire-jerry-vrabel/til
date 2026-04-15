@@ -97,10 +97,32 @@ const CTA_STATIONS = [
   { id: '41300', name: 'Loyola', direction: 'Loop' },
 ]
 
-// Average Red Line travel times from Rogers Park to key destinations (minutes)
-const CTA_TRAVEL_TIMES = {
-  toLoop: 40,      // Rogers Park → Loop (~40 min)
-  toHoward: 8,     // Rogers Park → Howard (~8 min)
+// Base Red Line travel time Howard ↔ Loop (minutes)
+const BASE_LOOP_HOWARD = 48
+
+function getCTATravelConditions(stations: CTAStation[]): CTATravelConditions {
+  const now = new Date()
+  const hour = now.getHours()
+  const day = now.getDay() // 0=Sun, 6=Sat
+  const isWeekend = day === 0 || day === 6
+  const isRush = !isWeekend && ((hour >= 7 && hour < 9) || (hour >= 16 && hour < 19))
+  const hasDelays = stations.some(s => s.hasDelays)
+
+  let loopToHoward = BASE_LOOP_HOWARD
+  let condition: CTATravelConditions['condition'] = 'normal'
+  let label = '✓ Normal service'
+
+  if (hasDelays) {
+    loopToHoward = BASE_LOOP_HOWARD + 8
+    condition = 'delayed'
+    label = '⚠ Delays reported'
+  } else if (isRush) {
+    loopToHoward = BASE_LOOP_HOWARD + 4
+    condition = 'rush'
+    label = `🕐 ${hour < 12 ? 'AM' : 'PM'} Rush hour`
+  }
+
+  return { loopToHoward, condition, label }
 }
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -264,13 +286,15 @@ export function Dashboard() {
             destination: e.destNm,
             minutes: mins <= 1 ? 'Due' : mins,
             delayed: e.isDly === '1',
+            isApproaching: e.isApp === '1',
           }
         })
-        return { name: station.name, trains }
+        const hasDelays = trains.some(t => t.delayed)
+        return { name: station.name, trains, hasDelays }
       })
     )
     setCta(results
-      .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [] })
+      .map((r, i) => r.status === 'fulfilled' ? r.value : { name: CTA_STATIONS[i].name, trains: [], hasDelays: false })
     )
   }
 
@@ -543,17 +567,6 @@ export function Dashboard() {
           </div>
           {cta.length > 0 ? (
             <>
-              <div className="dashboard__cta-travel-times">
-                <div className="dashboard__cta-travel-time">
-                  <span className="dashboard__cta-travel-label">→ Loop</span>
-                  <span className="dashboard__cta-travel-value">~{CTA_TRAVEL_TIMES.toLoop} min</span>
-                </div>
-                <div className="dashboard__cta-travel-divider" />
-                <div className="dashboard__cta-travel-time">
-                  <span className="dashboard__cta-travel-label">→ Howard</span>
-                  <span className="dashboard__cta-travel-value">~{CTA_TRAVEL_TIMES.toHoward} min</span>
-                </div>
-              </div>
               <div className="dashboard__cta-stations">
                 {cta.map((station, i) => (
                   <div key={i} className="dashboard__cta-station">
@@ -566,9 +579,10 @@ export function Dashboard() {
                               {train.line}
                             </span>
                             <span className="dashboard__cta-dest">{train.destination}</span>
-                            <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}`}>
+                            <span className={`dashboard__cta-time${train.delayed ? ' dashboard__cta-time--delayed' : ''}${train.isApproaching ? ' dashboard__cta-time--approaching' : ''}`}>
                               {train.minutes === 'Due' ? 'Due' : `${train.minutes}m`}
                               {train.delayed && ' ⚠'}
+                              {train.isApproaching && !train.delayed && ' →'}
                             </span>
                           </div>
                         ))}
@@ -579,6 +593,21 @@ export function Dashboard() {
                   </div>
                 ))}
               </div>
+              {(() => {
+                const conditions = getCTATravelConditions(cta)
+                return (
+                  <div className={`dashboard__cta-travel-times dashboard__cta-travel-times--${conditions.condition}`}>
+                    <div className="dashboard__cta-travel-time">
+                      <span className="dashboard__cta-travel-label">Loop ↔ Howard</span>
+                      <span className="dashboard__cta-travel-value">~{conditions.loopToHoward} min</span>
+                    </div>
+                    <div className="dashboard__cta-travel-divider" />
+                    <div className="dashboard__cta-travel-condition">
+                      <span className="dashboard__cta-condition-label">{conditions.label}</span>
+                    </div>
+                  </div>
+                )
+              })()}
             </>
           ) : (
             <div className="dashboard__skeleton" />
