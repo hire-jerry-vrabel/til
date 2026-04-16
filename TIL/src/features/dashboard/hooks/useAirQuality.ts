@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react'
 import type { AirQualityData } from '../types'
-
-const LAT = 41.9981
-const LNG = -87.6673
+import { LAT, LNG } from '../constants'
 
 const AQI_LEVELS = [
   { max: 50, label: 'Good', color: '#16a34a' },

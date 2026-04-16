@@ -11,30 +11,10 @@ import type {
 } from '../features/dashboard/types'
 import { CTAMap } from '../features/dashboard/components/CTAMap'
 import { useAirQuality } from '../features/dashboard/hooks/useAirQuality'
+import { PROXY_URL } from '../features/dashboard/constants'
+import { useWeather, WEATHER_CODES, WEATHER_EMOJI } from '../features/dashboard/hooks/useWeather'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
-
-const LAT = 41.9981
-const LNG = -87.6673
-const PROXY_URL = 'https://til-proxy.hire-jerry-vrabel.workers.dev'
-
-const WEATHER_CODES: Record<number, string> = {
-  0: 'Clear', 1: 'Mostly Clear', 2: 'Partly Cloudy', 3: 'Overcast',
-  45: 'Foggy', 48: 'Icy Fog', 51: 'Light Drizzle', 53: 'Drizzle',
-  55: 'Heavy Drizzle', 61: 'Light Rain', 63: 'Rain', 65: 'Heavy Rain',
-  71: 'Light Snow', 73: 'Snow', 75: 'Heavy Snow', 80: 'Showers',
-  95: 'Thunderstorm', 99: 'Severe Thunderstorm',
-}
-
-const WEATHER_EMOJI: Record<number, string> = {
-  0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
-  45: '🌫️', 48: '🌫️',
-  51: '🌦️', 53: '🌦️', 55: '🌧️',
-  61: '🌦️', 63: '🌧️', 65: '🌧️',
-  71: '🌨️', 73: '🌨️', 75: '❄️',
-  80: '🌧️',
-  95: '⛈️', 99: '⛈️',
-}
 
 const CHICAGO_TEAMS = [
   { sport: 'baseball', league: 'mlb', name: 'Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
@@ -87,7 +67,7 @@ function getCTATravelConditions(stations: CTAStation[]): CTATravelConditions {
 
 export function Dashboard() {
   const { isDark } = useTheme()
-  const [weather, setWeather] = useState<WeatherData | null>(null)
+  const { weather, fetchWeather } = useWeather()
   const { airQuality, fetchAirQuality } = useAirQuality()
   const [sports, setSports] = useState<SportsTeam[]>([])
   const [github, setGithub] = useState<GitHubData | null>(null)
@@ -96,26 +76,6 @@ export function Dashboard() {
   const [insight, setInsight] = useState<AIInsight>({ text: '', loading: false })
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
-
-const fetchWeather = async () => {
-    const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code&hourly=temperature_2m&daily=sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Chicago&forecast_days=1`
-    )
-    const data = await res.json()
-    const hourly = data.hourly.time.slice(0, 24).map((t: string, i: number) => ({
-      time: new Date(t).getHours() + ':00',
-      temp: Math.round(data.hourly.temperature_2m[i]),
-    }))
-    setWeather({
-      temp: Math.round(data.current.temperature_2m),
-      feelsLike: Math.round(data.current.apparent_temperature),
-      windspeed: Math.round(data.current.wind_speed_10m),
-      weathercode: data.current.weather_code,
-      sunrise: data.daily.sunrise[0],
-      sunset: data.daily.sunset[0],
-      hourly,
-    })
-  }
 
 
   const fetchSports = async () => {
