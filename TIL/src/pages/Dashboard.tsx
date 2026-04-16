@@ -12,6 +12,8 @@ interface WeatherData {
   feelsLike: number
   windspeed: number
   weathercode: number
+  sunrise: string
+  sunset: string
   hourly: { time: string; temp: number }[]
 }
 
@@ -128,6 +130,16 @@ const WEATHER_CODES: Record<number, string> = {
   55: 'Heavy Drizzle', 61: 'Light Rain', 63: 'Rain', 65: 'Heavy Rain',
   71: 'Light Snow', 73: 'Snow', 75: 'Heavy Snow', 80: 'Showers',
   95: 'Thunderstorm', 99: 'Severe Thunderstorm',
+}
+
+const WEATHER_EMOJI: Record<number, string> = {
+  0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+  45: '🌫️', 48: '🌫️',
+  51: '🌦️', 53: '🌦️', 55: '🌧️',
+  61: '🌦️', 63: '🌧️', 65: '🌧️',
+  71: '🌨️', 73: '🌨️', 75: '❄️',
+  80: '🌧️',
+  95: '⛈️', 99: '⛈️',
 }
 
 const AQI_LEVELS = [
@@ -292,9 +304,9 @@ export function Dashboard() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchWeather = async () => {
+const fetchWeather = async () => {
     const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code&hourly=temperature_2m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Chicago&forecast_days=1`
+      `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LNG}&current=temperature_2m,apparent_temperature,wind_speed_10m,weather_code&hourly=temperature_2m&daily=sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Chicago&forecast_days=1`
     )
     const data = await res.json()
     const hourly = data.hourly.time.slice(0, 24).map((t: string, i: number) => ({
@@ -306,6 +318,8 @@ export function Dashboard() {
       feelsLike: Math.round(data.current.apparent_temperature),
       windspeed: Math.round(data.current.wind_speed_10m),
       weathercode: data.current.weather_code,
+      sunrise: data.daily.sunrise[0],
+      sunset: data.daily.sunset[0],
       hourly,
     })
   }
@@ -610,10 +624,18 @@ export function Dashboard() {
               <div className="dashboard__weather-main">
                 <span className="dashboard__weather-temp">{weather.temp}°F</span>
                 <div className="dashboard__weather-detail">
-                  <span>{WEATHER_CODES[weather.weathercode] ?? 'Unknown'}</span>
+                  <span>
+                    <span className="dashboard__weather-emoji">{WEATHER_EMOJI[weather.weathercode] ?? '🌡️'}</span>
+                    {' '}
+                    {WEATHER_CODES[weather.weathercode] ?? 'Unknown'}
+                  </span>
                   <span>Feels like {weather.feelsLike}°F</span>
                   <span>Wind {weather.windspeed} mph</span>
                 </div>
+              </div>
+              <div className="dashboard__weather-sun">
+                <span>🌅 {new Date(weather.sunrise).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+                <span>🌇 {new Date(weather.sunset).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
               </div>
               <ResponsiveContainer width="100%" height={80}>
                 <AreaChart data={weather.hourly} margin={{ top: 4, right: 4, left: -32, bottom: 0 }}>
