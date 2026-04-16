@@ -2651,14 +2651,11 @@ kbd {
   font-size: 0.8rem;
   color: var(--text-secondary, #64748b);
   margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border, #e2e8f0);
 }
 
 [data-theme="dark"] .dashboard__weather-sun,
 .dark .dashboard__weather-sun {
   color: #94a3b8;
-  border-color: #1e293b;
 }
 
 /* AI Insight */

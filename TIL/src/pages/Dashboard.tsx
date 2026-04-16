@@ -633,10 +633,6 @@ const fetchWeather = async () => {
                   <span>Wind {weather.windspeed} mph</span>
                 </div>
               </div>
-              <div className="dashboard__weather-sun">
-                <span>🌅 {new Date(weather.sunrise).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
-                <span>🌇 {new Date(weather.sunset).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
-              </div>
               <ResponsiveContainer width="100%" height={80}>
                 <AreaChart data={weather.hourly} margin={{ top: 4, right: 4, left: -32, bottom: 0 }}>
                   <defs>
@@ -655,6 +651,10 @@ const fetchWeather = async () => {
                   <Area type="monotone" dataKey="temp" stroke={chartColor} fill="url(#tempGrad)" strokeWidth={2} dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
+              <div className="dashboard__weather-sun">
+                <span>🌅 {new Date(weather.sunrise).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+                <span>🌇 {new Date(weather.sunset).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+              </div>
             </>
           ) : (
             <div className="dashboard__skeleton" />
