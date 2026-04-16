@@ -10,6 +10,7 @@ import type {
   ESPNCompetitor, ESPNEvent, GitHubEvent, CTAEta, CTAPositionTrain,
 } from '../features/dashboard/types'
 import { CTAMap } from '../features/dashboard/components/CTAMap'
+import { useAirQuality } from '../features/dashboard/hooks/useAirQuality'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -34,15 +35,6 @@ const WEATHER_EMOJI: Record<number, string> = {
   80: '🌧️',
   95: '⛈️', 99: '⛈️',
 }
-
-const AQI_LEVELS = [
-  { max: 50, label: 'Good', color: '#16a34a' },
-  { max: 100, label: 'Moderate', color: '#d97706' },
-  { max: 150, label: 'Unhealthy for Sensitive', color: '#ea580c' },
-  { max: 200, label: 'Unhealthy', color: '#dc2626' },
-  { max: 300, label: 'Very Unhealthy', color: '#9333ea' },
-  { max: 500, label: 'Hazardous', color: '#7f1d1d' },
-]
 
 const CHICAGO_TEAMS = [
   { sport: 'baseball', league: 'mlb', name: 'Cubs', abbr: 'CHC', fallbackLogo: 'https://a.espncdn.com/i/teamlogos/mlb/500/chc.png' },
@@ -90,20 +82,13 @@ function getCTATravelConditions(stations: CTAStation[]): CTATravelConditions {
   return { loopToHoward, condition, label }
 }
 
-// ─── Helper ───────────────────────────────────────────────────────────────────
-
-function getAQILevel(aqi: number) {
-  return AQI_LEVELS.find(l => aqi <= l.max) ?? AQI_LEVELS[AQI_LEVELS.length - 1]
-}
-
-
 
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
 export function Dashboard() {
   const { isDark } = useTheme()
   const [weather, setWeather] = useState<WeatherData | null>(null)
-  const [airQuality, setAirQuality] = useState<AirQualityData | null>(null)
+  const { airQuality, fetchAirQuality } = useAirQuality()
   const [sports, setSports] = useState<SportsTeam[]>([])
   const [github, setGithub] = useState<GitHubData | null>(null)
   const [cta, setCta] = useState<CTAStation[]>([])
@@ -132,22 +117,6 @@ const fetchWeather = async () => {
     })
   }
 
-  const fetchAirQuality = async () => {
-    const res = await fetch(
-      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${LAT}&longitude=${LNG}&current=us_aqi,pm2_5,pm10,ozone`
-    )
-    const data = await res.json()
-    const aqi = Math.round(data.current.us_aqi)
-    const level = getAQILevel(aqi)
-    setAirQuality({
-      aqi,
-      pm25: Math.round(data.current.pm2_5 * 10) / 10,
-      pm10: Math.round(data.current.pm10 * 10) / 10,
-      ozone: Math.round(data.current.ozone * 10) / 10,
-      label: level.label,
-      color: level.color,
-    })
-  }
 
   const fetchSports = async () => {
     const results = await Promise.allSettled(
