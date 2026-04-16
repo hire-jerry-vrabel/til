@@ -45,8 +45,7 @@ export default defineConfig({
       registerType: "prompt",
       injectRegister: false,
       pwaAssets: {
-        disabled: false,
-        config: true,
+        disabled: true,
       },
       manifest: {
         name: "TIL — Today I Learned",
