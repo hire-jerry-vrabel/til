@@ -122,3 +122,13 @@ export interface NewsItem {
   publishedAt: string
   locality: 'neighborhood' | 'city'
 }
+
+export interface EventItem {
+  title: string
+  url: string
+  source: string
+  venue: string
+  startDate: string
+  category: string
+  locality: 'neighborhood' | 'city'
+}
