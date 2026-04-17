@@ -114,3 +114,11 @@ export interface CTAPositionTrain {
   destNm?: string
   heading?: string
 }
+
+export interface NewsItem {
+  title: string
+  url: string
+  source: string
+  publishedAt: string
+  locality: 'neighborhood' | 'city'
+}

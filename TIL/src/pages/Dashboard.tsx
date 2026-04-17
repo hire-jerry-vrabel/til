@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import type {
-  WeatherData, AirQualityData, SportsTeam, GitHubData, AIInsight,
+  WeatherData, AirQualityData, SportsTeam, GitHubData, AIInsight, NewsItem,
 } from '../features/dashboard/types'
 import { useAirQuality } from '../features/dashboard/hooks/useAirQuality'
 import { PROXY_URL } from '../features/dashboard/constants'
@@ -8,11 +8,13 @@ import { useWeather, WEATHER_CODES, } from '../features/dashboard/hooks/useWeath
 import { useGitHub } from '../features/dashboard/hooks/useGitHub'
 import { useSports } from '../features/dashboard/hooks/useSports'
 import { useCTA } from '../features/dashboard/hooks/useCTA'
+import { useNews } from '../features/dashboard/hooks/useNews'
 import { AirQualityCard } from '../features/dashboard/components/AirQualityCard'
 import { SportsCard } from '../features/dashboard/components/SportsCard'
 import { WeatherCard } from '../features/dashboard/components/WeatherCard'
 import { GitHubCard } from '../features/dashboard/components/GitHubCard'
 import { CTACard } from '../features/dashboard/components/CTACard'
+import { NewsCard } from '../features/dashboard/components/NewsCard'
 
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
@@ -22,6 +24,7 @@ export function Dashboard() {
   const { sports, fetchSports } = useSports()
   const { github, fetchGitHub } = useGitHub()
   const { cta, mapTrains, fetchCTA } = useCTA()
+  const { news, fetchNews } = useNews()
   const [insight, setInsight] = useState<AIInsight>({ text: '', loading: false })
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [loading, setLoading] = useState(true)
@@ -31,16 +34,22 @@ export function Dashboard() {
     w: WeatherData | null,
     aq: AirQualityData | null,
     s: SportsTeam[],
-    g: GitHubData | null
+    g: GitHubData | null,
+    n: NewsItem[]
   ) => {
     if (!w || !aq || !g) return
     setInsight({ text: '', loading: true })
+
+    const newsContext = n.length > 0
+      ? `Top local news: ${n.slice(0, 3).map(item => `"${item.title}" (${item.source})`).join('; ')}.`
+      : ''
 
     const context = `
       Weather in Rogers Park, Chicago: ${w.temp}°F, feels like ${w.feelsLike}°F, ${WEATHER_CODES[w.weathercode] ?? 'Unknown'}, wind ${w.windspeed}mph.
       Air quality: AQI ${aq.aqi} (${aq.label}), PM2.5: ${aq.pm25}, PM10: ${aq.pm10}.
       GitHub activity (last 30 days): ${g.commits} commits, ${g.streak} day streak, latest repo: ${g.latestRepo}.
       Chicago sports today: ${s.map(t => `${t.name}: ${t.status}`).join('; ')}.
+      ${newsContext}
     `.trim()
 
     try {
@@ -50,7 +59,7 @@ export function Dashboard() {
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 150,
-          system: 'You are a witty, concise data analyst. Generate exactly 2-3 sentences summarizing the data with a clever cross-domain observation. Be specific with numbers. Mention Rogers Park or Chicago naturally. Keep it under 60 words.',
+          system: 'You are a witty, concise data analyst. Generate exactly 2-3 sentences summarizing the data with a clever cross-domain observation. Be specific with numbers. Mention Rogers Park or Chicago naturally. Reference a current news headline if relevant. Keep it under 60 words.',
           messages: [{ role: 'user', content: context }],
         }),
       })
@@ -69,10 +78,11 @@ export function Dashboard() {
       fetchSports(),
       fetchGitHub(),
       fetchCTA(),
+      fetchNews(),
     ])
     setLastUpdated(new Date())
     setLoading(false)
-  }, [fetchWeather, fetchAirQuality, fetchSports, fetchGitHub, fetchCTA])
+  }, [fetchWeather, fetchAirQuality, fetchSports, fetchGitHub, fetchCTA, fetchNews])
 
   useEffect(() => {
     fetchAll()
@@ -82,9 +92,9 @@ export function Dashboard() {
 
   useEffect(() => {
     if (!loading && weather && airQuality && github) {
-      fetchInsight(weather, airQuality, sports, github)
+      fetchInsight(weather, airQuality, sports, github, news)
     }
-  }, [loading, weather, airQuality, github, sports, fetchInsight])
+  }, [loading, weather, airQuality, github, sports, news, fetchInsight])
 
   return (
     <main className="dashboard">
@@ -134,6 +144,9 @@ export function Dashboard() {
 
         {/* CTA Red Line */}
         <CTACard cta={cta} mapTrains={mapTrains} />
+
+        {/* Chicago News */}
+        <NewsCard news={news} />
 
       </div>
     </main>
