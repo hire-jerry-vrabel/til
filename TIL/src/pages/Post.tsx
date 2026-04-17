@@ -22,6 +22,7 @@ import { Quiz } from '../components/mdx/Quiz'
 import { PostComments } from "../components/mdx/PostComments"
 import TypeScriptPlayground from '../components/mdx/TypeScriptPlayground'
 import { Gallery } from '../components/mdx/Gallery'
+import LaughTrack from '../components/mdx/LaughTrack'
 
 const mdxComponents = {
   TypeScriptPlayground,
@@ -38,6 +39,7 @@ const mdxComponents = {
   AnimationPlayground,
   TrafficDashboard,
   CubsWTracker,
+  LaughTrack
 }
 
 export function Post() {

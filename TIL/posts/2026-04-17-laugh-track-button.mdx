@@ -1,0 +1,55 @@
+---
+title: "The most useful component I've ever made"
+date: "2026-04-17"
+tags: ["react", "web-audio-api", "typescript", "til"]
+description: "A single big red button that plays a laugh track — built with the Web Audio API and a base64-embedded MP3."
+---
+
+<br />
+
+<LaughTrack />
+
+## How It Works
+
+The entire app is a single React component. The audio file is base64-encoded and embedded directly in the `.tsx` file, so there's no network request or file to host separately.
+
+Three things happen under the hood:
+
+1. **First press** — an `AudioContext` is created (browsers require a user gesture before allowing audio) and the base64 string is decoded into an `AudioBuffer`.
+2. **Every press after** — a new `AudioBufferSourceNode` is created from the cached buffer, connected to the audio output, and played. Creating a new source each time means you can mash the button and stack laughs on top of each other.
+3. **The button itself** — pointer events toggle a `pressed` state that swaps the radial gradient and box-shadow to fake a physical push-in effect. `scale(0.97)` sells the illusion.
+
+## The Key Bits
+
+The decode function converts the base64 data URI into an `AudioBuffer`:
+
+```typescript
+function decodeAudio(ctx: AudioContext, uri: string): Promise<AudioBuffer> {
+  const bin: string = atob(uri.split(",")[1]);
+  const buf: ArrayBuffer = new ArrayBuffer(bin.length);
+  const view: Uint8Array = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) view[i] = bin.charCodeAt(i);
+  return ctx.decodeAudioData(buf);
+}
+```
+
+And playback is just three lines every time:
+
+```typescript
+const src: AudioBufferSourceNode = ctx.createBufferSource();
+src.buffer = bufRef.current;
+src.connect(ctx.destination);
+src.start();
+```
+
+No `<audio>` element, no `howler.js`, no dependencies beyond React. The Web Audio API gives you low-latency playback and full control over the audio graph — overkill for a laugh button, but it's the same foundation you'd use for a synth, a drum machine, or a DJ deck.
+
+## Audio Source
+
+The laugh track is "Light Applause with Laughter Audience" from [Mixkit](https://mixkit.co/free-sound-effects/laugh/), converted from WAV to a 64kbps mono MP3 with ffmpeg to keep the file size down:
+
+```bash
+ffmpeg -i laugh.wav -ac 1 -ar 22050 -b:a 64k laugh.mp3
+```
+
+1.8MB WAV → 82KB MP3. Small enough to base64-encode inline without the component becoming unreasonable.
