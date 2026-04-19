@@ -1,18 +1,8 @@
 {
   "views": {
-    "count": 117,
+    "count": 110,
     "uniques": 3,
     "views": [
-      {
-        "timestamp": "2026-04-03T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
-      {
-        "timestamp": "2026-04-04T00:00:00Z",
-        "count": 15,
-        "uniques": 2
-      },
       {
         "timestamp": "2026-04-05T00:00:00Z",
         "count": 14,
@@ -72,23 +62,23 @@
         "timestamp": "2026-04-16T00:00:00Z",
         "count": 14,
         "uniques": 2
+      },
+      {
+        "timestamp": "2026-04-17T00:00:00Z",
+        "count": 8,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-04-18T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 559,
-    "uniques": 209,
+    "count": 563,
+    "uniques": 212,
     "clones": [
-      {
-        "timestamp": "2026-04-03T00:00:00Z",
-        "count": 1,
-        "uniques": 1
-      },
-      {
-        "timestamp": "2026-04-04T00:00:00Z",
-        "count": 56,
-        "uniques": 28
-      },
       {
         "timestamp": "2026-04-05T00:00:00Z",
         "count": 37,
@@ -148,6 +138,16 @@
         "timestamp": "2026-04-16T00:00:00Z",
         "count": 87,
         "uniques": 34
+      },
+      {
+        "timestamp": "2026-04-17T00:00:00Z",
+        "count": 49,
+        "uniques": 25
+      },
+      {
+        "timestamp": "2026-04-18T00:00:00Z",
+        "count": 12,
+        "uniques": 8
       }
     ]
   },
@@ -155,13 +155,13 @@
     {
       "path": "/hire-jerry-vrabel/til/actions",
       "title": "/actions",
-      "count": 63,
+      "count": 55,
       "uniques": 2
     },
     {
       "path": "/hire-jerry-vrabel/til",
       "title": "Overview",
-      "count": 13,
+      "count": 11,
       "uniques": 3
     },
     {
@@ -216,9 +216,9 @@
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 76,
+      "count": 61,
       "uniques": 3
     }
   ],
-  "updated": "2026-04-18T07:18:32Z"
+  "updated": "2026-04-19T07:27:51Z"
 }
