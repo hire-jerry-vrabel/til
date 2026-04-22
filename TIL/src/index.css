@@ -3208,3 +3208,279 @@ kbd {
   flex: 1;
   min-width: 0;
 }
+
+/* =========================================================
+   Dashboard — Card unification + scrollable variant
+   ========================================================= */
+
+/* Consistent min-height so short cards don't look anemic.
+   Tall cards still grow naturally. */
+.dashboard__grid {
+  grid-auto-rows: minmax(260px, auto);
+}
+
+/* Shared card shell — turns the card into a flex column so
+   the body can scroll while the header stays pinned. */
+.dashboard__card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* allow children to shrink inside grid */
+}
+
+.dashboard__card-header {
+  flex-shrink: 0;
+}
+
+/* Generic body region — fills remaining space below the header */
+.dashboard__card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Scrollable body — for feed-style cards (News, Events).
+   Fixed max-height keeps the card bounded in the grid.
+   Fade at the bottom hints there's more to scroll. */
+.dashboard__card-body--scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border, #e2e8f0) transparent;
+  mask-image: linear-gradient(
+    to bottom,
+    black 0,
+    black calc(100% - 24px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 0,
+    black calc(100% - 24px),
+    transparent 100%
+  );
+  padding-bottom: 0.5rem;
+}
+
+.dashboard__card-body--scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard__card-body--scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard__card-body--scroll::-webkit-scrollbar-thumb {
+  background: var(--border, #e2e8f0);
+  border-radius: 3px;
+}
+
+[data-theme="dark"] .dashboard__card-body--scroll,
+.dark .dashboard__card-body--scroll {
+  scrollbar-color: #1e293b transparent;
+}
+
+[data-theme="dark"] .dashboard__card-body--scroll::-webkit-scrollbar-thumb,
+.dark .dashboard__card-body--scroll::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
+
+/* Feed item count indicator — shown in card sub-header */
+.dashboard__card-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary, #94a3b8);
+  padding: 0.1rem 0.5rem;
+  background: var(--surface-alt, #f1f5f9);
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+[data-theme="dark"] .dashboard__card-count,
+.dark .dashboard__card-count {
+  background: #1e293b;
+  color: #64748b;
+}
+
+/* =========================================================
+   News Card
+   ========================================================= */
+
+.dashboard__news-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard__news-row {
+  display: block;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border, #f1f5f9);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+  border-radius: 4px;
+  margin: 0 -0.35rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+}
+
+.dashboard__news-row:last-child {
+  border-bottom: none;
+}
+
+.dashboard__news-row:hover {
+  background: var(--surface-alt, #f8fafc);
+}
+
+.dashboard__news-title {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text, #1e293b);
+  line-height: 1.35;
+  margin-bottom: 0.3rem;
+  /* Clamp to 2 lines to keep row heights consistent */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dashboard__news-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+}
+
+.dashboard__news-locality {
+  font-weight: 600;
+}
+
+.dashboard__news-source {
+  color: var(--text-secondary, #64748b);
+}
+
+.dashboard__news-time {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme="dark"] .dashboard__news-row,
+.dark .dashboard__news-row { border-color: #1e293b; }
+
+[data-theme="dark"] .dashboard__news-row:hover,
+.dark .dashboard__news-row:hover { background: #0a0f1e; }
+
+[data-theme="dark"] .dashboard__news-title,
+.dark .dashboard__news-title { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__news-source,
+.dark .dashboard__news-source { color: #94a3b8; }
+
+/* =========================================================
+   Events Card
+   ========================================================= */
+
+.dashboard__events-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard__events-row {
+  display: block;
+  padding: 0.6rem 0.35rem;
+  border-bottom: 1px solid var(--border, #f1f5f9);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+  border-radius: 4px;
+  margin: 0 -0.35rem;
+}
+
+.dashboard__events-row:last-child {
+  border-bottom: none;
+}
+
+.dashboard__events-row:hover {
+  background: var(--surface-alt, #f8fafc);
+}
+
+.dashboard__events-info {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.6rem;
+  align-items: start;
+}
+
+.dashboard__events-category {
+  font-size: 1.1rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.dashboard__events-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.dashboard__events-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text, #1e293b);
+  line-height: 1.3;
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dashboard__events-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.72rem;
+}
+
+.dashboard__events-venue {
+  color: var(--text-secondary, #64748b);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.dashboard__events-source {
+  font-weight: 600;
+}
+
+.dashboard__events-date {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary, #64748b);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .dashboard__events-row,
+.dark .dashboard__events-row { border-color: #1e293b; }
+
+[data-theme="dark"] .dashboard__events-row:hover,
+.dark .dashboard__events-row:hover { background: #0a0f1e; }
+
+[data-theme="dark"] .dashboard__events-title,
+.dark .dashboard__events-title { color: #e2e8f0; }
+
+[data-theme="dark"] .dashboard__events-venue,
+[data-theme="dark"] .dashboard__events-date,
+.dark .dashboard__events-venue,
+.dark .dashboard__events-date { color: #94a3b8; }

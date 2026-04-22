@@ -36,19 +36,21 @@ export function NewsCard({ news }: NewsCardProps) {
       <div className="dashboard__card-header">
         <span className="dashboard__card-icon">📰</span>
         <h2 className="dashboard__card-title">Chicago News</h2>
-        <span className="dashboard__card-sub">Rogers Park &amp; Chicago</span>
+        {news.length > 0 && (
+          <span className="dashboard__card-count">{news.length}</span>
+        )}
       </div>
       {news.length > 0 ? (
-        <div className="dashboard__news-list">
-          {news.map((item, i) => (
-            <a 
-              key={i}
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="dashboard__news-row"
-            >
-              <div className="dashboard__news-headline">
+        <div className="dashboard__card-body dashboard__card-body--scroll">
+          <div className="dashboard__news-list">
+            {news.map((item, i) => (
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="dashboard__news-row"
+              >
                 <span className="dashboard__news-title">{item.title}</span>
                 <div className="dashboard__news-meta">
                   <span
@@ -64,9 +66,9 @@ export function NewsCard({ news }: NewsCardProps) {
                     <span className="dashboard__news-time">{timeAgo(item.publishedAt)}</span>
                   )}
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="dashboard__skeleton" />
