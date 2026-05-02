@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 15,
+    "count": 7,
     "uniques": 1,
     "views": [
-      {
-        "timestamp": "2026-04-17T00:00:00Z",
-        "count": 8,
-        "uniques": 1
-      },
       {
         "timestamp": "2026-04-18T00:00:00Z",
         "count": 0,
@@ -72,18 +67,18 @@
         "timestamp": "2026-04-30T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-05-01T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 468,
-    "uniques": 186,
+    "count": 438,
+    "uniques": 174,
     "clones": [
-      {
-        "timestamp": "2026-04-17T00:00:00Z",
-        "count": 49,
-        "uniques": 25
-      },
       {
         "timestamp": "2026-04-18T00:00:00Z",
         "count": 12,
@@ -148,16 +143,15 @@
         "timestamp": "2026-04-30T00:00:00Z",
         "count": 77,
         "uniques": 26
+      },
+      {
+        "timestamp": "2026-05-01T00:00:00Z",
+        "count": 19,
+        "uniques": 11
       }
     ]
   },
   "paths": [
-    {
-      "path": "/hire-jerry-vrabel/til/actions",
-      "title": "/actions",
-      "count": 7,
-      "uniques": 1
-    },
     {
       "path": "/hire-jerry-vrabel/til/actions/runs/24786727005",
       "title": "/actions/runs/24786727005",
@@ -165,8 +159,8 @@
       "uniques": 1
     },
     {
-      "path": "/hire-jerry-vrabel/til/actions/runs/24570973185",
-      "title": "/actions/runs/24570973185",
+      "path": "/hire-jerry-vrabel/til/actions",
+      "title": "/actions",
       "count": 2,
       "uniques": 1
     },
@@ -181,12 +175,6 @@
       "title": "/actions/runs/24477320740",
       "count": 1,
       "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/actions/runs/24542828563",
-      "title": "/actions/runs/24542828563",
-      "count": 1,
-      "uniques": 1
     }
   ],
   "referrers": [
@@ -196,5 +184,5 @@
       "uniques": 1
     }
   ],
-  "updated": "2026-05-01T08:20:55Z"
+  "updated": "2026-05-02T07:52:27Z"
 }
