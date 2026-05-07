@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 7,
-    "uniques": 1,
+    "count": 0,
+    "uniques": 0,
     "views": [
-      {
-        "timestamp": "2026-04-22T00:00:00Z",
-        "count": 7,
-        "uniques": 1
-      },
       {
         "timestamp": "2026-04-23T00:00:00Z",
         "count": 0,
@@ -72,18 +67,18 @@
         "timestamp": "2026-05-05T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-05-06T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 489,
-    "uniques": 190,
+    "count": 422,
+    "uniques": 167,
     "clones": [
-      {
-        "timestamp": "2026-04-22T00:00:00Z",
-        "count": 69,
-        "uniques": 26
-      },
       {
         "timestamp": "2026-04-23T00:00:00Z",
         "count": 49,
@@ -148,41 +143,15 @@
         "timestamp": "2026-05-05T00:00:00Z",
         "count": 21,
         "uniques": 10
+      },
+      {
+        "timestamp": "2026-05-06T00:00:00Z",
+        "count": 2,
+        "uniques": 2
       }
     ]
   },
-  "paths": [
-    {
-      "path": "/hire-jerry-vrabel/til/actions/runs/24786727005",
-      "title": "/actions/runs/24786727005",
-      "count": 3,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/actions",
-      "title": "/actions",
-      "count": 2,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til",
-      "title": "Overview",
-      "count": 1,
-      "uniques": 1
-    },
-    {
-      "path": "/hire-jerry-vrabel/til/actions/runs/24477320740",
-      "title": "/actions/runs/24477320740",
-      "count": 1,
-      "uniques": 1
-    }
-  ],
-  "referrers": [
-    {
-      "referrer": "github.com",
-      "count": 7,
-      "uniques": 1
-    }
-  ],
-  "updated": "2026-05-06T08:35:01Z"
+  "paths": [],
+  "referrers": [],
+  "updated": "2026-05-07T08:42:20Z"
 }
