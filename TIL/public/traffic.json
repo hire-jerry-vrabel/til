@@ -4,11 +4,6 @@
     "uniques": 0,
     "views": [
       {
-        "timestamp": "2026-05-04T00:00:00Z",
-        "count": 0,
-        "uniques": 0
-      },
-      {
         "timestamp": "2026-05-05T00:00:00Z",
         "count": 0,
         "uniques": 0
@@ -72,18 +67,18 @@
         "timestamp": "2026-05-17T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-05-18T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 148,
+    "count": 144,
     "uniques": 60,
     "clones": [
-      {
-        "timestamp": "2026-05-04T00:00:00Z",
-        "count": 13,
-        "uniques": 7
-      },
       {
         "timestamp": "2026-05-05T00:00:00Z",
         "count": 21,
@@ -148,10 +143,15 @@
         "timestamp": "2026-05-17T00:00:00Z",
         "count": 16,
         "uniques": 10
+      },
+      {
+        "timestamp": "2026-05-18T00:00:00Z",
+        "count": 9,
+        "uniques": 6
       }
     ]
   },
   "paths": [],
   "referrers": [],
-  "updated": "2026-05-18T10:16:25Z"
+  "updated": "2026-05-19T09:56:41Z"
 }
