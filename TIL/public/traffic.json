@@ -1,13 +1,8 @@
 {
   "views": {
-    "count": 2,
-    "uniques": 2,
+    "count": 1,
+    "uniques": 1,
     "views": [
-      {
-        "timestamp": "2026-06-08T00:00:00Z",
-        "count": 1,
-        "uniques": 1
-      },
       {
         "timestamp": "2026-06-09T00:00:00Z",
         "count": 0,
@@ -72,18 +67,18 @@
         "timestamp": "2026-06-21T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-06-22T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "clones": {
-    "count": 204,
-    "uniques": 77,
+    "count": 200,
+    "uniques": 73,
     "clones": [
-      {
-        "timestamp": "2026-06-08T00:00:00Z",
-        "count": 21,
-        "uniques": 12
-      },
       {
         "timestamp": "2026-06-09T00:00:00Z",
         "count": 7,
@@ -148,16 +143,15 @@
         "timestamp": "2026-06-21T00:00:00Z",
         "count": 20,
         "uniques": 9
+      },
+      {
+        "timestamp": "2026-06-22T00:00:00Z",
+        "count": 17,
+        "uniques": 8
       }
     ]
   },
   "paths": [
-    {
-      "path": "/hire-jerry-vrabel/til",
-      "title": "Overview",
-      "count": 1,
-      "uniques": 1
-    },
     {
       "path": "/hire-jerry-vrabel/til/actions",
       "title": "/actions",
@@ -168,9 +162,9 @@
   "referrers": [
     {
       "referrer": "github.com",
-      "count": 2,
-      "uniques": 2
+      "count": 1,
+      "uniques": 1
     }
   ],
-  "updated": "2026-06-22T12:14:37Z"
+  "updated": "2026-06-23T09:53:18Z"
 }
